@@ -1,3 +1,16 @@
+function injectedFunction() {
+  document.body.style.backgroundColor = "red";
+  console.log("--------------executeScript via function--------------");
+}
+
+// On Action Button Click
+// chrome.action.onClicked.addListener((tab) => {
+//   chrome.scripting.executeScript({
+//     target: { tabId: tab.id },
+//     files: ["content_scripts/content.js"]
+//   });
+// });
+
 // chrome.runtime.onInstalled.addListener(async () => {
 // Create a context menu for selected text
 chrome.contextMenus.create({
@@ -20,8 +33,6 @@ chrome.contextMenus.create({
 // Service worker cannot access the DOM, so alert() isn't available.
 
   console.log("contextMenus onClicked",info, tab);
-  console.log("info", info);
-  console.log("tab", tab);
 
   console.log("selectionText", info.selectionText);
   
@@ -38,9 +49,19 @@ chrome.contextMenus.create({
   console.log("id", tab.id);
   console.log("index", tab.index);
 
+  // chrome.scripting.executeScript({
+  //   target: { tabId: tab.id },
+  //   function: () => injectedFunction,
+  // });
 
-  //   if (info.menuItemId === "annotateText") {
-  //   console.log("--------------annotateText--------------");
+    if (info.menuItemId === "annotateText") {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ["content_scripts/add_comment.js"]
+      });
+    }
+ 
+    // console.log("--------------annotateText--------------");
   //     chrome.scripting.executeScript({
   //       target: {tabId: tab.id},
   //       function: () => {
