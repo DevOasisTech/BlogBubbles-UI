@@ -1,6 +1,27 @@
-function injectedFunction() {
-  document.body.style.backgroundColor = "red";
+function injectedFunction(tab, info, color) {
+  console.log("executeScript via function",info, tab, color);
+  console.log("selectionText", info.selectionText);
+  // console.log("pageUrl",info.pageUrl);
+  // console.log("favIconUrl", tab.favIconUrl);
+  // console.log("title", tab.title);
+  // console.log("height", tab.height);
+  // console.log("width", tab.width);
+  // console.log("highlighted", tab.highlighted);
+  // console.log("selected", tab.selected);
+  // console.log("id", tab.id);
+  // console.log("index", tab.index);
+
+  // document.body.style.backgroundColor = color;
+  // Logged in current tab's console
   console.log("--------------executeScript via function--------------");
+  const data = document.getElementById("ember25")
+  console.log("--------------data--------------", data);
+
+  const selection = window.getSelection();
+  console.log("--------------selection--------------",selection);
+
+  const activeElement = document.activeElement;
+  console.log("--------------activeElement--------------",activeElement);
 }
 
 // On Action Button Click
@@ -32,32 +53,21 @@ chrome.contextMenus.create({
 //   });   
 // Service worker cannot access the DOM, so alert() isn't available.
 
-  console.log("contextMenus onClicked",info, tab);
 
-  console.log("selectionText", info.selectionText);
-  
-  console.log("pageUrl",info.pageUrl);
-  console.log("favIconUrl", tab.favIconUrl);
-  console.log("title", tab.title);
 
-  console.log("height", tab.height);
-  console.log("width", tab.width);
-  
-  console.log("highlighted", tab.highlighted);
-  console.log("selected", tab.selected);
 
-  console.log("id", tab.id);
-  console.log("index", tab.index);
-
-  // chrome.scripting.executeScript({
-  //   target: { tabId: tab.id },
-  //   function: () => injectedFunction,
-  // });
 
     if (info.menuItemId === "annotateText") {
+      // Or call another file.
+      // chrome.scripting.executeScript({
+      //   target: { tabId: tab.id },
+      //   files: ["content_scripts/add_comment.js"]
+      // });
+
       chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["content_scripts/add_comment.js"]
+        target : {tabId : tab.id},
+        func : injectedFunction,
+        args : [tab, info, "yellow"]
       });
     }
  
@@ -65,8 +75,7 @@ chrome.contextMenus.create({
   //     chrome.scripting.executeScript({
   //       target: {tabId: tab.id},
   //       function: () => {
-  //         const selection = window.getSelection();
-  //         console.log("--------------selection--------------",selection);
+
   //         let node = selection.anchorNode;
   //         console.log("--------------node--------------",node);
   //         // Navigate up the DOM tree to find the closest element with an ID
