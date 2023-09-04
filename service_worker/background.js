@@ -1,13 +1,13 @@
 async function checkLoginStatus() {
   console.log("--------------checkLoginStatus--------------");
+
   chrome.storage.local.get(['token'], function(result) {
     console.log("--------------getAuthToken--------------");
-    if (!result.token) {
-      console.log("--------------logged_out_popup.html--------------");
-      chrome.action.setPopup({ popup: 'components/logged_out_popup.html' });
+    if (result.token) {
+      console.log("Token:===", result.token)
+      chrome.action.setPopup({ popup: 'components/comments.html' });
     } else {
-      console.log("--------------logged_in_popup.html--------------");
-      chrome.action.setPopup({ popup: 'components/logged_in_popup.html' });
+      chrome.action.setPopup({ popup: 'components/signIn.html' });
     }
   });
 }
