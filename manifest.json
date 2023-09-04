@@ -4,11 +4,12 @@
     "version": "1.0",
     "description": "Annotate and comment on web pages",
     "permissions": [
+      "storage",
       "activeTab",
       "contextMenus", 
       "identity",
-      "storage",
-      "scripting"
+      "scripting",
+      "sidePanel"
     ],
     "action": {
       "default_title": "Action Button",
@@ -16,5 +17,14 @@
     },
     "background": {
       "service_worker": "service_worker/background.js"
-    }
+    },
+    "side_panel": {
+      "default_path": "sidepanel-global.html"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["modal/*"],
+        "matches": ["<all_urls>"]
+      }
+    ]
   }

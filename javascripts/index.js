@@ -1,3 +1,3 @@
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.runtime.sendMessage({ type: 'checkLogin' });
+    chrome.runtime.sendMessage({ type: 'checkLoginStatus' });
   });
