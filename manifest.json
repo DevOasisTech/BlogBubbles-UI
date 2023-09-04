@@ -8,8 +8,7 @@
       "activeTab",
       "contextMenus", 
       "identity",
-      "scripting",
-      "sidePanel"
+      "scripting"
     ],
     "action": {
       "default_title": "Action Button",
@@ -18,12 +17,9 @@
     "background": {
       "service_worker": "service_worker/background.js"
     },
-    "side_panel": {
-      "default_path": "sidepanel-global.html"
-    },
     "web_accessible_resources": [
       {
-        "resources": ["modal/*"],
+        "resources": ["components/*", "styles/*", "javascripts/*"],
         "matches": ["<all_urls>"]
       }
     ]

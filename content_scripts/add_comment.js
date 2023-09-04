@@ -143,16 +143,16 @@ function showIdentifier(identifier) {
 }
 
 (async function() {
-    console.log("Content script running.");
-    chrome.runtime.sendMessage({type: 'checkLoginStatus'}, response => {
-        console.log('Received response:', response);
-        if (response.isLoggedIn) {
-            console.log("Content script running.");
-            let identifier = getIdentifier();
-            showIdentifier(identifier);            
-        } else{
-          // chrome.runtime.sendMessage({ type: 'open_side_panel' });
-          chrome.runtime.sendMessage({type: 'showLoginPopup'}, response => {});
-        }
-    });
+  console.log("Add Comment- start");
+  chrome.runtime.sendMessage({type: 'checkLoginStatus'}, response => {
+      console.log('Received response:', response);
+      if (response.isLoggedIn) {
+          console.log("Add Comment- isLoggedIn");
+          let identifier = getIdentifier();
+          showIdentifier(identifier);            
+      } else{
+        console.log("Add Comment- isLoggedOut");
+        chrome.runtime.sendMessage({type: 'showLoginPopup'}, response => {});
+      }
+  });
 })();
