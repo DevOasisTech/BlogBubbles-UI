@@ -3,9 +3,16 @@
     "name": "BlogBubbles",
     "version": "1.0",
     "description": "Annotate and comment on web pages",
-    "permissions": ["activeTab", "contextMenus", "scripting"],
+    "permissions": [
+      "activeTab",
+      "contextMenus", 
+      "identity",
+      "storage",
+      "scripting"
+    ],
     "action": {
-      "default_title": "Action Button"
+      "default_title": "Action Button",
+      "default_popup": "components/index.html"
     },
     "background": {
       "service_worker": "service_worker/background.js"

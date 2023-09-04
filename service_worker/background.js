@@ -1,3 +1,28 @@
+async function checkLoginStatus() {
+  console.log("--------------checkLoginStatus--------------");
+  chrome.storage.local.get(['token'], function(result) {
+    console.log("--------------getAuthToken--------------");
+    if (!result.token) {
+      console.log("--------------logged_out_popup.html--------------");
+      chrome.action.setPopup({ popup: 'components/logged_out_popup.html' });
+    } else {
+      console.log("--------------logged_in_popup.html--------------");
+      chrome.action.setPopup({ popup: 'components/logged_in_popup.html' });
+    }
+  });
+}
+
+// Initial check
+checkLoginStatus();
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("--------------message.type--------------",message.type);
+  if (message.type === 'checkLogin') {
+    checkLoginStatus();
+  }
+});
+
+
 
 function injectedFunction(tab, info) {
   let selection1 = window.getSelection();
