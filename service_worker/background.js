@@ -45,7 +45,23 @@ function showLoginPopup() {
       });
     }
   });
+}
 
+function ShowSignup() {
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+      // Execute your content script
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/showSignup.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+        }
+      });
+    }
+  });
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -58,7 +74,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;  
   } else if (message.type === 'showLoginPopup') {
     showLoginPopup(); 
-  } else {
+  } else if (message.type === 'ShowSignup') {
+    ShowSignup(); 
+  }
+   else {
     return false;
   }
 });

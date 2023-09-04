@@ -24,7 +24,7 @@ async function showLoginPopup() {
     </div>
     <button id="login-btn" class="login-button">Login</button>
     <div id="error-msg" class="error-msg"></div>
-    <p class="create-account-link" id="create-account-link">Don't have an account? <span class="link-text">Sign Up</span></p>
+    <p class="create-account-link">Don't have an account? <span class="link-text" id="create-account-link">Sign Up</span></p>
   `;
   modalContent.innerHTML = loginForm;
 
@@ -38,9 +38,17 @@ async function showLoginPopup() {
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   const errorMsg = document.getElementById("error-msg");
+  const createAccountLink = document.getElementById("create-account-link");
 
   const loginApiUrl = "http://localhost:8000/v1/login";
-  const tokenKey = "auth_token";
+  const tokenKey = "token";
+
+
+  createAccountLink.addEventListener("click", function () {
+    console.log("Clicked - ShowSignup");
+    chrome.runtime.sendMessage({ type: 'ShowSignup' });
+  });
+
 
   loginButton.addEventListener("click", async function () {
     const email = emailInput.value;

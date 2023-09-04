@@ -1,0 +1,162 @@
+async function showLoginPopup() {
+  let modalContainer = document.createElement("div");
+  modalContainer.style.position = "fixed";
+  modalContainer.style.top = "0";
+  modalContainer.style.left = "0";
+  modalContainer.style.width = "100%";
+  modalContainer.style.height = "100%";
+  modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+  modalContainer.style.zIndex = "10000";
+
+  // Create the modal content
+  let modalContent = document.createElement("div");
+  modalContent.className = "modal-content";
+
+  // Create the login form
+  let loginForm = `
+    <div class="description">Blog Bubbles</div>
+    <div class="input-container">
+        <input type="email" id="signupEmail" placeholder="Enter your email" required>
+    </div>
+
+    <div class="input-container">
+        <input type="password" id="signupPassword" placeholder="Enter your Password" required>
+    </div>
+    
+    <div class="input-container">
+      <input type="cPassword" id="signupCPassword" placeholder="Confirm Password" required>
+  </div>
+    <button id="signup-button" class="login-button">Create your account</button>
+    <div id="error-msg" class="error-msg"></div>
+    `;
+  modalContent.innerHTML = loginForm;
+
+  modalContainer.appendChild(modalContent);
+
+  document.body.appendChild(modalContainer);
+
+  const signupLink = document.getElementById("create-account-link");
+  const errorMsg = document.getElementById("error-msg");
+
+  console.log("Sign Up");
+  const signUpButton = document.getElementById("signup-button");
+  const emailInput = document.getElementById("signupEmail");
+  const passwordInput = document.getElementById("signupPassword");
+  const cPasswordInput = document.getElementById("signupCPassword");
+
+  const signUpApiUrl = "http://localhost:8000/v1/register";
+  const tokenKey = "token";
+
+  signUpButton.addEventListener("click", async function () {
+    console.log("Clicked Sign Up");
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const cPassword = cPasswordInput.value;
+
+    console.log("Email-", emailInput, passwordInput, cPasswordInput);
+    console.log("234567890-", email, password, cPassword);
+
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password1: password,
+        password2: cPassword,
+      }),
+    };
+
+    try {
+      const response = await fetch(signUpApiUrl, requestData);
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+      const data = await response.json();
+      const authToken = data?.token;
+      localStorage.setItem(tokenKey, authToken);
+      console.log("API response:", data);
+    } catch (error) {
+      console.error("API error:", error);
+      errorMsg.textContent = error.detail?.[0]?.msg || "";
+    }
+  });
+}
+
+function addStyles() {
+  const style = document.createElement("style");
+  style.innerHTML = `
+      .login-container {
+        background-color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+  
+      .description {
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+  
+      .input-container {
+        margin-bottom: 20px;
+      }
+  
+      .input-container input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        text-decoration: none;
+        outline: none;
+        width: 250px;
+      }
+  
+      .login-button {
+        background-color: #0073e6;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+  
+      .create-account-link {
+        margin-top: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        flex: 1;
+        margin: 16px 5px;
+      }
+  
+      .link-text {
+        color: #0073e6;
+        text-decoration: underline;
+      }
+  
+      .sign-up-container {
+        background-color: #fff;
+        padding: 20px;
+        text-align: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+  
+      .error-msg {
+        color: red;
+        font-size: 12px;
+      }
+    `;
+
+  document.head.appendChild(style);
+}
+
+addStyles();
+
+(async function () {
+  console.log("SHow login popup.");
+  showLoginPopup();
+})();
