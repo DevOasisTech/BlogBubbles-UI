@@ -1,4 +1,4 @@
-async function showLoginPopup() {
+async function showSignupPopup() {
   let modalContainer = document.createElement("div");
   modalContainer.style.position = "fixed";
   modalContainer.style.top = "0";
@@ -75,6 +75,11 @@ async function showLoginPopup() {
       const authToken = data?.token;
       setToken(authToken);
       // localStorage.setItem(tokenKey, authToken);
+
+      console.log("Clicked - ShowHome");
+      modalContainer.remove();
+      chrome.runtime.sendMessage({ type: "ShowHome" });
+
       console.log("API response:", data);
     } catch (error) {
       console.error("API error:", error);
@@ -84,7 +89,7 @@ async function showLoginPopup() {
 }
 
 function setToken(authToken) {
-  const dataToStore = { token: authToken };
+  const dataToStore = { token: authToken, email: email };
 
   chrome.storage.local.set(dataToStore, function () {
     if (chrome.runtime.lastError) {
@@ -168,5 +173,5 @@ addStyles();
 
 (async function () {
   console.log("SHow login popup.");
-  showLoginPopup();
+  showSignupPopup();
 })();

@@ -4,8 +4,8 @@
       console.log('Received response:', response);
       if (response.isLoggedIn) {
           console.log("Add Comment- isLoggedIn");
-          let identifier = getIdentifier();
-          showIdentifier(identifier);            
+          // let identifier = getIdentifier();
+          // showIdentifier(identifier);            
       } else{
         console.log("Add Comment- isLoggedOut");
         chrome.runtime.sendMessage({type: 'showLoginPopup'});

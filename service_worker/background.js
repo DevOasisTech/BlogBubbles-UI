@@ -30,7 +30,7 @@ async function getActiveTab() {
   });
 }
 
-function showLoginPopup() {
+function showSignupPopup() {
   getActiveTab().then((activeTab) => {
     if(activeTab) {
       // Execute your content script
@@ -64,6 +64,27 @@ function ShowSignup() {
   });
 }
 
+function ShowHome() {
+  console.log("Called");
+
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+      console.log("before exe");
+
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/showHome.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+        }
+      });
+    }
+  });
+}
+
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("--------------message.type--------------",message.type);
   if (message.type === 'checkLoginStatus') {
@@ -73,10 +94,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     return true;  
   } else if (message.type === 'showLoginPopup') {
-    showLoginPopup(); 
+    showSignupPopup(); 
     return false; 
   } else if (message.type === 'ShowSignup') {
     ShowSignup(); 
+    return false; 
+  } else if (message.type === 'ShowHome') {
+    console.log("Inside");
+    ShowHome(); 
     return false; 
   }
    else {
