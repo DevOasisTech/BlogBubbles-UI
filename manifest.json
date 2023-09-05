@@ -1,8 +1,13 @@
 {
     "manifest_version": 3,
-    "name": "BlogBubbles",
+    "name": "OpenInk",
     "version": "1.0",
     "description": "Annotate and comment on web pages",
+    "icons": {
+      "16": "icons/48.png",
+      "48": "icons/48.png",
+      "128": "icons/48.png"
+    },
     "permissions": [
       "storage",
       "activeTab",
@@ -11,8 +16,10 @@
       "scripting"
     ],
     "action": {
-      "default_title": "Action Button",
-      "default_popup": "components/index.html"
+      "default_icon": {             
+        "16": "icons/48.png"  
+      },
+      "default_title": "OpenInk"
     },
     "background": {
       "service_worker": "service_worker/background.js"

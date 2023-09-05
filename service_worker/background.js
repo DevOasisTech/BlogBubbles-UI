@@ -74,8 +74,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;  
   } else if (message.type === 'showLoginPopup') {
     showLoginPopup(); 
+    return false; 
   } else if (message.type === 'ShowSignup') {
     ShowSignup(); 
+    return false; 
   }
    else {
     return false;
@@ -98,6 +100,14 @@ chrome.contextMenus.create({
         files: ["content_scripts/add_comment.js"]
       });
     }
+  });
+
+  chrome.action.onClicked.addListener((tab) => {
+    console.log("chrome.action.onClicked", tab);
+    chrome.scripting.executeScript({
+      target: {tabId: tab.id},
+      files: ['content_scripts/actionPopup.js']
+    });
   });
 
 });

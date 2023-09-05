@@ -152,7 +152,7 @@ function showIdentifier(identifier) {
           showIdentifier(identifier);            
       } else{
         console.log("Add Comment- isLoggedOut");
-        chrome.runtime.sendMessage({type: 'showLoginPopup'}, response => {});
+        chrome.runtime.sendMessage({type: 'showLoginPopup'});
       }
   });
 })();
