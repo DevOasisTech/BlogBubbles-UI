@@ -73,7 +73,7 @@ async function showSignupPopup() {
       }
       const data = await response.json();
       const authToken = data?.token;
-      setToken(authToken);
+      setToken(authToken, email);
       // localStorage.setItem(tokenKey, authToken);
 
       console.log("Clicked - ShowHome");
@@ -88,7 +88,7 @@ async function showSignupPopup() {
   });
 }
 
-function setToken(authToken) {
+function setToken(authToken, email) {
   const dataToStore = { token: authToken, email: email };
 
   chrome.storage.local.set(dataToStore, function () {

@@ -4,8 +4,15 @@
       console.log('Received response:', response);
       if (response.isLoggedIn) {
           console.log("Add Comment- isLoggedIn");
-          // let identifier = getIdentifier();
-          // showIdentifier(identifier);            
+          
+        // Temp code to remove token
+          chrome.storage.local.remove(["token"],function(){
+            var error = chrome.runtime.lastError;
+               if (error) {
+                   console.error(error);
+               }
+           });        
+
       } else{
         console.log("Add Comment- isLoggedOut");
         chrome.runtime.sendMessage({type: 'showLoginPopup'});
