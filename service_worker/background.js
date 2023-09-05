@@ -64,6 +64,24 @@ function ShowSignup() {
   });
 }
 
+function AddCommentScript() {
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+      // Execute your content script
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/add_comment.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.log("AddCommentScript error");
+          console.error(chrome.runtime.lastError);
+        }
+      });
+    }
+  });
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("--------------message.type--------------",message.type);
   if (message.type === 'checkLoginStatus') {
@@ -77,6 +95,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return false; 
   } else if (message.type === 'ShowSignup') {
     ShowSignup(); 
+    return false; 
+  } else if (message.type === 'executeAddCommentScript') {
+    AddCommentScript(); 
     return false; 
   }
    else {
@@ -95,10 +116,7 @@ chrome.contextMenus.create({
   // Add a click event listener
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "annotateText") {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["content_scripts/add_comment.js"]
-      });
+      AddCommentScript();
     }
   });
 
