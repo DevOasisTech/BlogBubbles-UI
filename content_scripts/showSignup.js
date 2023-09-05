@@ -2,17 +2,23 @@ async function showLoginPopup() {
   let modalContainer = document.createElement("div");
   modalContainer.style.position = "fixed";
   modalContainer.style.top = "0";
-  modalContainer.style.left = "0";
+  modalContainer.style.right = "0";
   modalContainer.style.width = "100%";
   modalContainer.style.height = "100%";
   modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
   modalContainer.style.zIndex = "10000";
+  modalContainer.style.display = "flex";
+  modalContainer.style.justifyContent = "flex-end";
 
-  // Create the modal content
   let modalContent = document.createElement("div");
   modalContent.className = "modal-content";
 
-  // Create the login form
+  modalContent.style.backgroundColor = "white";
+  modalContent.style.padding = "50px";
+  modalContent.style.width = "400px";
+  modalContent.style.height = "100vh";
+
+  modalContainer.appendChild(modalContent);
   let loginForm = `
     <div class="description">Blog Bubbles</div>
     <div class="input-container">
@@ -28,6 +34,7 @@ async function showLoginPopup() {
   </div>
     <button id="signup-button" class="login-button">Create your account</button>
     <div id="error-msg" class="error-msg"></div>
+    <p class="create-account-link">Have a account? <span class="link-text" id="sign-up-link">Sign In</span></p>
     `;
   modalContent.innerHTML = loginForm;
 
@@ -35,10 +42,8 @@ async function showLoginPopup() {
 
   document.body.appendChild(modalContainer);
 
-  const signupLink = document.getElementById("create-account-link");
+  const signupLinkText = document.getElementById("sign-up-link");
   const errorMsg = document.getElementById("error-msg");
-
-  console.log("Sign Up");
   const signUpButton = document.getElementById("signup-button");
   const emailInput = document.getElementById("signupEmail");
   const passwordInput = document.getElementById("signupPassword");
@@ -47,15 +52,19 @@ async function showLoginPopup() {
   const signUpApiUrl = "http://localhost:8000/v1/register";
   const tokenKey = "token";
 
+
+  signupLinkText.addEventListener("click", function () {
+    console.log("Clicked - checkLoginStatus");
+    modalContainer.remove();
+    chrome.runtime.sendMessage({ type: "showLoginPopup" });
+  });
+
   signUpButton.addEventListener("click", async function () {
     console.log("Clicked Sign Up");
 
     const email = emailInput.value;
     const password = passwordInput.value;
     const cPassword = cPasswordInput.value;
-
-    console.log("Email-", emailInput, passwordInput, cPasswordInput);
-    console.log("234567890-", email, password, cPassword);
 
     const requestData = {
       method: "POST",
@@ -76,7 +85,7 @@ async function showLoginPopup() {
       }
       const data = await response.json();
       const authToken = data?.token;
-      localStorage.setItem(tokenKey, authToken);
+      setToken(authToken);
       console.log("API response:", data);
     } catch (error) {
       console.error("API error:", error);
@@ -84,6 +93,20 @@ async function showLoginPopup() {
     }
   });
 }
+
+function setToken(authToken) {
+  const dataToStore = { token: authToken };
+
+  chrome.storage.local.set(dataToStore, function () {
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError);
+      return;
+    }
+    console.log("Data successfully stored in chrome.storage.local");
+  });
+}
+
+
 
 function addStyles() {
   const style = document.createElement("style");

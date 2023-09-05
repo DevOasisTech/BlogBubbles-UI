@@ -1,18 +1,25 @@
 async function showLoginPopup() {
-
   let modalContainer = document.createElement("div");
   modalContainer.style.position = "fixed";
   modalContainer.style.top = "0";
-  modalContainer.style.left = "0";
+  modalContainer.style.right = "0";
   modalContainer.style.width = "100%";
   modalContainer.style.height = "100%";
   modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
   modalContainer.style.zIndex = "10000";
-  
-  // Create the modal content
+  modalContainer.style.display = "flex";
+  modalContainer.style.justifyContent = "flex-end";
+
   let modalContent = document.createElement("div");
   modalContent.className = "modal-content";
-  
+
+  modalContent.style.backgroundColor = "white";
+  modalContent.style.padding = "50px";
+  modalContent.style.width = "400px";
+  modalContent.style.height = "100vh";
+
+  modalContainer.appendChild(modalContent);
+
   // Create the login form
   let loginForm = `
     <div class="description">Blog Bubbles</div>
@@ -32,7 +39,6 @@ async function showLoginPopup() {
 
   document.body.appendChild(modalContainer);
 
-
   // Event listener for the login button
   const loginButton = document.getElementById("login-btn");
   const emailInput = document.getElementById("email");
@@ -43,12 +49,11 @@ async function showLoginPopup() {
   const loginApiUrl = "http://localhost:8000/v1/login";
   const tokenKey = "token";
 
-
   createAccountLink.addEventListener("click", function () {
     console.log("Clicked - ShowSignup");
-    chrome.runtime.sendMessage({ type: 'ShowSignup' });
+    modalContainer.remove();
+    chrome.runtime.sendMessage({ type: "ShowSignup" });
   });
-
 
   loginButton.addEventListener("click", async function () {
     const email = emailInput.value;
@@ -68,15 +73,26 @@ async function showLoginPopup() {
       }
       const data = await response.json();
       const authToken = data?.token;
-      localStorage.setItem(tokenKey, authToken);
+      setToken(authToken);
+      // localStorage.setItem(tokenKey, authToken);
       console.log("API response:", data);
-    
     } catch (error) {
       console.error("API error:", error);
       errorMsg.textContent = error.message;
     }
   });
+}
 
+function setToken(authToken) {
+  const dataToStore = { token: authToken };
+
+  chrome.storage.local.set(dataToStore, function () {
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError);
+      return;
+    }
+    console.log("Data successfully stored in chrome.storage.local");
+  });
 }
 
 function addStyles() {
@@ -150,8 +166,7 @@ function addStyles() {
 
 addStyles();
 
-(async function() {
-    console.log("SHow login popup.");
-    showLoginPopup();
-
+(async function () {
+  console.log("SHow login popup.");
+  showLoginPopup();
 })();
