@@ -77,6 +77,7 @@ function ShowHome() {
       }, function() {
         // Optional callback after the script has been injected
         if (chrome.runtime.lastError) {
+          console.log("ShowHomeScript error");
           console.error(chrome.runtime.lastError);
         }
       });
@@ -84,6 +85,23 @@ function ShowHome() {
   });
 }
 
+function AddCommentScript() {
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+      // Execute your content script
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/add_comment.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.log("AddCommentScript error");
+          console.error(chrome.runtime.lastError);
+        }
+      });
+    }
+  });
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("--------------message.type--------------",message.type);
@@ -102,6 +120,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.type === 'ShowHome') {
     console.log("Inside");
     ShowHome(); 
+  } else if (message.type === 'executeAddCommentScript') {
+    AddCommentScript(); 
     return false; 
   }
    else {
@@ -120,10 +140,7 @@ chrome.contextMenus.create({
   // Add a click event listener
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "annotateText") {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["content_scripts/add_comment.js"]
-      });
+      AddCommentScript();
     }
   });
 

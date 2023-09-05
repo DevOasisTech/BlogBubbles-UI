@@ -8,12 +8,22 @@
       "48": "icons/48.png",
       "128": "icons/48.png"
     },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_scripts/tooltip.js"]
+      }
+    ],
+    "host_permissions": [
+      "<all_urls>"
+    ],
     "permissions": [
-      "storage",
+
       "activeTab",
       "contextMenus", 
       "identity",
-      "scripting"
+      "scripting",
+      "storage"
     ],
     "action": {
       "default_icon": {             
