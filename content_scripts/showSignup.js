@@ -20,6 +20,7 @@ async function showSignupPopup() {
 
   modalContainer.appendChild(modalContent);
   let loginForm = `
+  <button id="close-button" class="close-button">X</button>
     <div class="description">Blog Bubbles</div>
     <div class="input-container">
         <input type="email" id="signupEmail" placeholder="Enter your email" required>
@@ -48,10 +49,14 @@ async function showSignupPopup() {
   const emailInput = document.getElementById("signupEmail");
   const passwordInput = document.getElementById("signupPassword");
   const cPasswordInput = document.getElementById("signupCPassword");
+  const closeButton = document.getElementById("close-button")
 
   const signUpApiUrl = "http://localhost:8000/v1/register";
-  const tokenKey = "token";
 
+  closeButton.addEventListener("click", function() {
+    console.log("closeButton");
+    modalContainer.remove();
+  });
 
   signupLinkText.addEventListener("click", function () {
     console.log("Clicked - checkLoginStatus");
@@ -127,6 +132,18 @@ function addStyles() {
   
       .input-container {
         margin-bottom: 20px;
+      }
+      
+      .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #333;
       }
   
       .input-container input {

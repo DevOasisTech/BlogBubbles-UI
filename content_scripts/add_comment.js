@@ -177,8 +177,8 @@ async function shoWCommentsPopup() {
 
   modalContainer.appendChild(modalContent);
   let userCommentsForm = `
+  <button id="close-button" class="close-button">X</button>
   <div class="user-info">
-    // <img src="user-avatar.jpg" alt="User Avatar" class="user-avatar">
     <span class="username">Username</span>
   </div>
   <div class="input-container">
@@ -190,6 +190,12 @@ async function shoWCommentsPopup() {
 modalContent.innerHTML = userCommentsForm;
 modalContainer.appendChild(modalContent);
 document.body.appendChild(modalContainer);
+
+const closeButton = document.getElementById("close-button")
+closeButton.addEventListener("click", function() {
+  console.log("closeButton");
+  modalContainer.remove();
+});
 }
 
 function addStyles() {
@@ -231,6 +237,17 @@ function addStyles() {
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
+  }
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
   }
   `;
 

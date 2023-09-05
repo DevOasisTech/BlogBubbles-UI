@@ -28,6 +28,7 @@ async function showHome() {
         modalContainer.appendChild(modalContent);
 
         const loggedInContainer = `
+        <button id="close-button" class="close-button">X</button>
             <div class="logged-in-container">
                 <div class="username">Logged in as: ${userData.username}</div>
                 <button id="logout-btn" class="logout-button">Logout</button>
@@ -39,6 +40,7 @@ async function showHome() {
         document.body.appendChild(modalContainer);
 
         const logoutButton = document.getElementById("logout-btn");
+        const closeButton = document.getElementById("close-button");
 
         logoutButton.addEventListener("click", function () {
           chrome.storage.local.remove(["token"], function (result) {
@@ -46,6 +48,11 @@ async function showHome() {
             console.log("tokentoken", result.token);
             chrome.runtime.sendMessage({ type: "showLoginPopup" });
           });
+        });
+
+        closeButton.addEventListener("click", function () {
+          console.log("closeButton");
+          modalContainer.remove();
         });
       }
     }
@@ -86,6 +93,17 @@ function addStyles() {
         border-radius: 4px;
         font-size: 16px;
         cursor: pointer;
+      }
+      .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #333;
       }
     `;
 

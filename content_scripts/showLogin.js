@@ -22,6 +22,7 @@ async function showSignupPopup() {
 
   // Create the login form
   let loginForm = `
+  <button id="close-button" class="close-button">X</button>
     <div class="description">Blog Bubbles</div>
     <div class="input-container">
       <input type="email" id="email" placeholder="Enter your email" required>
@@ -47,7 +48,12 @@ async function showSignupPopup() {
   const createAccountLink = document.getElementById("create-account-link");
 
   const loginApiUrl = "http://localhost:8000/v1/login";
-  const tokenKey = "token";
+
+  const closeButton = document.getElementById("close-button")
+  closeButton.addEventListener("click", function() {
+    console.log("closeButton");
+    modalContainer.remove();
+  });
 
   createAccountLink.addEventListener("click", function () {
     console.log("Clicked - ShowSignup");
@@ -163,6 +169,18 @@ function addStyles() {
     .error-msg {
       color: red;
       font-size: 12px;
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
     }
   `;
 
