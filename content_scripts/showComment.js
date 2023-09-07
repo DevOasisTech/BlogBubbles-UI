@@ -1,8 +1,11 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("--------------Show Comment message.type--------------",message.type);
- if (message.type === 'Tab-showCommentPopup') {
-    shoWCommentsPopup(message.params); 
-    return false; 
+  console.log(
+    "--------------Show Comment message.type--------------",
+    message.type
+  );
+  if (message.type === "Tab-showCommentPopup") {
+    shoWCommentsPopup(message.params);
+    return false;
   }
 });
 
@@ -31,9 +34,10 @@ async function shoWCommentsPopup(params) {
   let userPostCommentsForm = `
   <button id="close-button" class="close-button">X</button>
   <div class="container">
+  <div class="success-message">You have added comment successfully.</div>
     <div class="user-name">User Name</div>
       <div class="comment-box">
-        Selected text
+       ${params?.selectionText}
       </div>
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
         <div class="cta-buttons">
@@ -50,18 +54,18 @@ async function shoWCommentsPopup(params) {
   const closeButton = document.getElementById("close-button");
   const postButton = document.getElementById("post-button");
   const commentInput = document.getElementById("comment-input");
+  const successMessage = document.querySelector(".success-message");
 
   closeButton.addEventListener("click", function () {
     modalContainer.remove();
   });
 
-  const comment = commentInput.value;
   const data = {
-    identifier: {},
+    identifier: params?.identifier || {},
     url: window.location.href || "",
-    comment: comment || "",
-    identifier_id: null,
-    anchor_text: "string",
+    comment: commentInput.value || "",
+    identifier_id: params?.identifierId || null,
+    anchor_text: params?.selectionText || "",
   };
 
   let requestData = {};
@@ -86,7 +90,10 @@ async function shoWCommentsPopup(params) {
         throw new Error("Something went wrong");
       }
       const data = await response.json();
-      console.log("API response:", data);
+      successMessage.style.display = "block";
+      setTimeout(() => {
+        successMessage.style.display = "none";
+      }, 2000);
     } catch (error) {
       console.error("API error:", error);
       // errorMsg.textContent = error.message;
@@ -111,6 +118,19 @@ function getUserDataFromToken(token) {
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `
+  .success-message {
+    background-color: lightgreen;
+    color: black;
+    padding: 10px;
+    text-align: center;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 12px;
+  }
   .highlighted-text {
     background-color: rgb(210, 231, 209);
     color: black;
@@ -167,6 +187,7 @@ function addStyles() {
     color: #333;
   }
   .container {
+    position: relative;
     width: 300px;
     padding: 20px;
     background-color: white;
