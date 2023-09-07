@@ -20,6 +20,8 @@ async function createLoggedInContainer() {
         mainContainer.style.zIndex = "10000";
         mainContainer.style.display = "flex";
         mainContainer.style.justifyContent = "flex-end";
+        mainContainer.style.overflowY = "auto";
+
         
         let loggedInHeader = document.createElement("div");
         loggedInHeader.className = "modal-content";
@@ -27,6 +29,7 @@ async function createLoggedInContainer() {
         loggedInHeader.style.padding = "50px";
         loggedInHeader.style.width = "400px";
         loggedInHeader.style.height = "100vh";
+        loggedInHeader.style.overflowY = "auto";
     
       const loggedInContainer = `
       <button id="close-button" class="close-button">X</button>

@@ -22,7 +22,7 @@ async function showCommentsPopup(params) {
 }
 
 function fetchComments(identifierId) {
-  const showCommentApiUrl = `http://localhost:8000/v1/comments/${
+  const showCommentApiUrl = `http://localhost:8000/v1/comments?identifier_id=${
     identifierId || null
   }`;
 
@@ -44,24 +44,44 @@ function displayComments(data) {
   if (data?.length > 0) {
     data.forEach((entity) => {
       const headerContainer = document.createElement("div");
-      headerContainer.className = "comment-header";
+      headerContainer.className = "comments-header";
+
+      const userAvatarElement = document.createElement("div");
+      userAvatarElement.className = "user-avatar";
+      userAvatarElement.textContent = "A";
+
+      const userDetailsContainer = document.createElement("div");
+      userDetailsContainer.className = "user-details";
 
       const usernameElement = document.createElement("div");
       usernameElement.className = "show_comm_username";
       usernameElement.textContent = entity.user.name;
 
-      headerContainer.appendChild(usernameElement);
+      const timeElement = document.createElement("div");
+      timeElement.className = "comment-time";
+      timeElement.textContent = formatDateAndTime(entity.created_at);
+
+      userDetailsContainer.appendChild(usernameElement);
+      userDetailsContainer.appendChild(timeElement);
+
+      headerContainer.appendChild(userAvatarElement);
+      headerContainer.appendChild(userDetailsContainer);
 
       const commentTextElement = document.createElement("div");
-      commentTextElement.className = "comment-text";
-      commentTextElement.textContent = entity.comment;
+      commentTextElement.className = "comment-box comment-text";
+      commentTextElement.textContent = entity.archor_text;
+
+      const addedCommentElement = document.createElement("div");
+      addedCommentElement.className = "show_comm_username";
+      addedCommentElement.textContent = entity.comment ;
 
       const divider = document.createElement("div");
-      divider.style.borderBottom = "1px solid rgb(242, 242, 242)";
-      divider.style.padding = "20px 0px";
+      divider.style.borderBottom = "1px solid black";
+      divider.style.margin = "30px 0px";
 
       commentContainer.appendChild(headerContainer);
       commentContainer.appendChild(commentTextElement);
+      commentContainer.appendChild(addedCommentElement);
       commentContainer.appendChild(divider);
     });
   } else {
@@ -77,6 +97,26 @@ function noCommentsPresent() {
   noCommentsMessage.style.color = "black";
   commentContainer.appendChild(noCommentsMessage);
 }
+function formatDateAndTime(timestamp) {
+  if (!timestamp) {
+    return 
+  }
+  const date = new Date(timestamp);
+
+  const year = date.getUTCFullYear();
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+  const day = date.getUTCDate().toString().padStart(2, '0');
+  const hours = date.getUTCHours().toString().padStart(2, '0');
+  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  const hours12 = (hours % 12) || 12;
+
+  const formattedDate = `${day}/${month}/${year} ${hours12}:${minutes} ${ampm}`;
+
+  return formattedDate;
+}
 
 function addStyles() {
   const style = document.createElement("style");
@@ -90,8 +130,34 @@ function addStyles() {
         }
 
         .show_comm_username {
-        font-size: 16px;
+        font-size: 14px;
         }
+        .comment-time {
+          font-size: 11px;
+        }
+        .comments-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          gap: 10px
+        }
+    
+        .user-avatar{
+          width: 35px;
+          height: 35px;
+          background-color: #3498db;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 16px;
+      }
+
+      .user-details {
+        flex-grow: 1;
+      }
     `;
   document.head.appendChild(style);
 }
