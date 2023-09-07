@@ -1,9 +1,10 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log(
-    "--------------Show Comment message.type--------------",
-    message.type
-  );
+
   if (message.type === "Tab-highlightAnchorText") {
+    console.log(
+      "--------------highlightAnchor message.type--------------",
+      message.type
+    );
     showIdentifier(message.params.identifier, message.params.identifierId);
     return false;
   }

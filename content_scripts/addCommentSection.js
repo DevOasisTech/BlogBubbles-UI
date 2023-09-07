@@ -1,16 +1,15 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log(
-    "--------------Show Comment message.type--------------",
-    message.type
-  );
-  if (message.type === "Tab-showCommentPopup") {
+  if (message.type === "Tab-addCommentPopup") {
+    console.log(
+      "--------------AddCommentSection Comment message.type--------------",
+      message.type
+    );
     showAddCommentsPopup(message.params);
     return false;
   }
 });
 
 async function showAddCommentsPopup(params) {
-  console.log("params", params);
   let userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
@@ -219,4 +218,5 @@ function addStyles() {
 
   document.head.appendChild(style);
 }
+
 addStyles();

@@ -106,20 +106,7 @@ function AddCommentScript() {
 function AddCommentPopup(params) {
   getActiveTab().then((activeTab) => {
     if(activeTab) {
-
-      // Execute your content script
-      chrome.scripting.executeScript({
-        target: { tabId: activeTab.id },
-        files: ["content_scripts/addCommentSection.js"]
-      }, function() {
-        // Optional callback after the script has been injected
-        if (chrome.runtime.lastError) {
-          console.log("ShowCommentScript error");
-          console.error(chrome.runtime.lastError);
-        } else{
-          chrome.tabs.sendMessage(activeTab.id, { type: "Tab-showCommentPopup", params: params });
-        }
-      });
+      chrome.tabs.sendMessage(activeTab.id, { type: "Tab-addCommentPopup", params: params });
     }
   });
 }
@@ -127,20 +114,7 @@ function AddCommentPopup(params) {
 function ShowCommentPopup(params) {
   getActiveTab().then((activeTab) => {
     if(activeTab) {
-
-      // Execute your content script
-      chrome.scripting.executeScript({
-        target: { tabId: activeTab.id },
-        files: ["content_scripts/showComment.js"]
-      }, function() {
-        // Optional callback after the script has been injected
-        if (chrome.runtime.lastError) {
-          console.log("ShowCommentScript error");
-          console.error(chrome.runtime.lastError);
-        } else{
-          chrome.tabs.sendMessage(activeTab.id, { type: "Tab-showCommentPopup", params: params });
-        }
-      });
+      chrome.tabs.sendMessage(activeTab.id, { type: "Tab-showCommentPopup", params: params });
     }
   });
 }

@@ -1,16 +1,16 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log(
-    "--------------Show Comment message.type--------------",
-    message.type
-  );
   if (message.type === "Tab-showCommentPopup") {
+    console.log(
+      "--------------ShowComment message.type--------------",
+      message.type
+    );
     // showCommentsPopup(message.params);
     return false;
   }
 });
 
 async function showCommentsPopup(params) {
-  console.log("params====", params);
+  // console.log("showCommentsPopup====", params);
   let commentBox = `<div class="comment-container">
         <div class="comment-header">
           <span class="show_comm_username">User Name</span>
