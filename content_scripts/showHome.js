@@ -26,7 +26,7 @@ async function createLoggedInContainer() {
         let loggedInHeader = document.createElement("div");
         loggedInHeader.className = "modal-content";
         loggedInHeader.style.backgroundColor = "white";
-        loggedInHeader.style.padding = "50px";
+        loggedInHeader.style.padding = "30px 50px 50px";
         loggedInHeader.style.width = "400px";
         loggedInHeader.style.height = "100vh";
         loggedInHeader.style.overflowY = "auto";
@@ -38,11 +38,18 @@ async function createLoggedInContainer() {
             <button id="logout-btn" class="logout-button">Logout</button>
         </div>
         `;
+
+        const logoContainer = `
+        <div class="logo-container">
+            <img src='icons/48.png' height='52' width='52' alt='Logo' />
+            <div class="logo-text">WebWishper</div>
+        </div>
+        `;
         
         const addCommentSection = `<div id="add-comment-section"></div>`
         const showCommentSection = `<div id="show-comment-section"></div>`
 
-        let modalContentHtml = loggedInContainer + addCommentSection + showCommentSection;
+        let modalContentHtml = logoContainer + loggedInContainer + addCommentSection + showCommentSection;
         loggedInHeader.innerHTML = modalContentHtml;
         
         mainContainer.appendChild(loggedInHeader);

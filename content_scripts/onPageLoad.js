@@ -4,6 +4,15 @@ console.log("Page has loaded!");
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `
+      .logo-container{
+        display: flex;
+        items-align: center;
+      }
+      .logo-text{
+        color: #0073e6;
+        font-size: 24px;
+        font-weight: 600;
+      }
       .logged-in-container {
         background-color: #fff;
         padding: 20px;
