@@ -1,62 +1,87 @@
-async function showHome() {
-  chrome.storage.local.get(["token"], function (result) {
-    const token = result.token;
-    console.log("tokentoken", token);
-    if (token) {
-      const userData = getUserDataFromToken(token);
-      console.log("userData", userData);
-      if (userData) {
-        let modalContainer = document.createElement("div");
-        modalContainer.style.position = "fixed";
-        modalContainer.style.top = "0";
-        modalContainer.style.right = "0";
-        modalContainer.style.width = "100%";
-        modalContainer.style.height = "100%";
-        modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-        modalContainer.style.zIndex = "10000";
-        modalContainer.style.display = "flex";
-        modalContainer.style.justifyContent = "flex-end";
+async function createLoggedInContainer() {
+  let mainDivClassId = 'logged-in-modal-container';
 
-        let modalContent = document.createElement("div");
-        modalContent.className = "modal-content";
-
-        modalContent.style.backgroundColor = "white";
-        modalContent.style.padding = "50px";
-        modalContent.style.width = "400px";
-        modalContent.style.height = "100vh";
-
-        modalContainer.appendChild(modalContent);
-
-        const loggedInContainer = `
-          <button id="close-button" class="close-button">X</button>
-            <div class="logged-in-container">
-                <div class="username">Logged in as: ${userData.username}</div>
-                <button id="logout-btn" class="logout-button">Logout</button>
-            </div>
-            `;
-
-        modalContent.innerHTML = loggedInContainer;
-        modalContainer.appendChild(modalContent);
-        document.body.appendChild(modalContainer);
-
-        const logoutButton = document.getElementById("logout-btn");
+  let mainContainerEle = document.getElementById(mainDivClassId);
+  if (mainContainerEle == null) {
+    await chrome.storage.local.get(["token"], function (result) {
+      const token = result.token;
+      console.log("tokentoken", token);
+      if (token) {
+        const userData = getUserDataFromToken(token);
+        let mainContainer = document.createElement("div");
+        mainContainer.id = mainDivClassId;
+      
+        mainContainer.style.position = "fixed";
+        mainContainer.style.top = "0";
+        mainContainer.style.right = "0";
+        mainContainer.style.width = "100%";
+        mainContainer.style.height = "100%";
+        mainContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+        mainContainer.style.zIndex = "10000";
+        mainContainer.style.display = "flex";
+        mainContainer.style.justifyContent = "flex-end";
+        
+        let loggedInHeader = document.createElement("div");
+        loggedInHeader.className = "modal-content";
+        loggedInHeader.style.backgroundColor = "white";
+        loggedInHeader.style.padding = "50px";
+        loggedInHeader.style.width = "400px";
+        loggedInHeader.style.height = "100vh";
+        mainContainer.appendChild(loggedInHeader);
+    
+      const loggedInContainer = `
+      <button id="close-button" class="close-button">X</button>
+        <div class="logged-in-container">
+            <div class="username" id="login-user-name">Logged in as: ${userData.username}</div>
+            <button id="logout-btn" class="logout-button">Logout</button>
+        </div>
+        `;
+    
+        loggedInHeader.innerHTML = loggedInContainer;
+        document.body.appendChild(mainContainer);
+    
         const closeButton = document.getElementById("close-button");
-
+        closeButton.addEventListener("click", function () {
+          console.log("closeButton");
+          mainContainer.style.display = 'none';
+        });
+    
+        const logoutButton = document.getElementById("logout-btn");
         logoutButton.addEventListener("click", function () {
-          chrome.storage.local.remove(["token"], function (result) {
-            modalContainer.remove();
-            console.log("tokentoken", result.token);
+          console.log("logout clicked");
+          chrome.storage.local.remove(["token"], function () {
+            mainContainer.remove();
             chrome.runtime.sendMessage({ type: "showLoginPopup" });
           });
         });
-
-        closeButton.addEventListener("click", function () {
-          console.log("closeButton");
-          modalContainer.remove();
-        });
+    
+        addStyles();
+        mainContainerEle = mainContainer;
       }
-    }
-  });
+    });
+  }
+  
+  if (mainContainerEle){
+    mainContainerEle.style.display = 'flex';
+  }
+
+}
+
+function getUserDataFromToken(token) {
+  try {
+    const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+    const userData = {
+      username: tokenPayload.email,
+    };
+    return userData;
+  } catch (error) {
+    console.error("Error decoding token or extracting user data:", error);
+    return null;
+  }
+}
+
+async function showHome() {
+  createLoggedInContainer();
 }
 
 function addStyles() {
@@ -96,7 +121,6 @@ function addStyles() {
 
   document.head.appendChild(style);
 }
-addStyles();
 
 (async function () {
   console.log("showHome popup.");
