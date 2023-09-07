@@ -82,7 +82,10 @@ async function showSignupPopup() {
       setToken(authToken, email);
       console.log("Clicked - ShowHome");
       modalContainer.remove();
-      chrome.runtime.sendMessage({ type: "ShowHome" });
+      chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
+        chrome.runtime.sendMessage({ type: "addCommentPopup"});
+        chrome.runtime.sendMessage({ type: "showCommentPopup"});
+      });
       console.log("API response:", data);
     } catch (error) {
       console.error("API error:", error);
