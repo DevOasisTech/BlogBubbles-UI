@@ -119,11 +119,12 @@ function addStyles() {
     
     .comment-box {
       border-radius: 4px;
-      font-size: 14px;
-      margin: 20px 0px;
-      padding: 15px;
-      box-shadow: rgba(0, 0, 0, 0.04) 0px 1px 4px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+    padding: 15px 0px;
+    }
+
+    .comment-text{
+      background-color : #C7F6B6;
     }
     
     .comment-input {

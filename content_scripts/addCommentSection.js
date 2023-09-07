@@ -18,9 +18,9 @@ async function showAddCommentsPopup(params) {
   let userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
-      <div class="comment-box">
-       ${params?.selectionText}
-      </div>
+    <div class="comment-box">
+    <mark class="comment-text">${params?.selectionText}</mark>
+    </div>
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
         <div class="cta-buttons">
           <button class="cta-button post-button" id="post-button">Post</button>
@@ -28,8 +28,8 @@ async function showAddCommentsPopup(params) {
     </div>
 `;
 
-if (!params?.selectionText){
-  userPostCommentsForm = `
+  if (!params?.selectionText) {
+    userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
@@ -38,14 +38,12 @@ if (!params?.selectionText){
         </div>
     </div>
 `;
-
-}
+  }
   let devider = `<div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px 0px"></div>`;
   let responses = `<div style="font-size: 22px; font-weight: bold; padding: 20px 0px;">All Comments</div>`;
 
   const addCommentSection = document.getElementById("add-comment-section");
-  let modalContentHtml =
-    userPostCommentsForm + devider + responses;
+  let modalContentHtml = userPostCommentsForm + devider + responses;
   addCommentSection.innerHTML = modalContentHtml;
 
   const postButton = document.getElementById("post-button");
@@ -53,12 +51,10 @@ if (!params?.selectionText){
   chrome.storage.local.get(["token"], function (result) {
     token = result.token;
   });
-  
-  postButton.addEventListener("click", async function () {  
-    createCommentApi(token, params)
+
+  postButton.addEventListener("click", async function () {
+    createCommentApi(token, params);
   });
-
-
 }
 
 async function createCommentApi(token, params) {
@@ -80,7 +76,7 @@ async function createCommentApi(token, params) {
       "Content-Type": "application/json",
       token: token,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   };
 
   try {
@@ -90,9 +86,12 @@ async function createCommentApi(token, params) {
     }
     const data = await response.json();
     successMessage.style.display = "block";
-    if(!params?.identifierId && data.position_id){
-      chrome.runtime.sendMessage({ type: "highlightAnchorText", identifier: params?.identifier, 
-      identifierId: data.position_id});
+    if (!params?.identifierId && data.position_id) {
+      chrome.runtime.sendMessage({
+        type: "highlightAnchorText",
+        identifier: params?.identifier,
+        identifierId: data.position_id,
+      });
     }
     setTimeout(() => {
       successMessage.style.display = "none";
@@ -179,11 +178,8 @@ function addStyles() {
 
 .comment-box {
   border-radius: 4px;
-  font-size: 14px;
-  margin: 20px 0px;
-  padding: 15px;
-  box-shadow: rgba(0, 0, 0, 0.04) 0px 1px 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  padding: 15px 0px;
 }
 
 .comment-input {

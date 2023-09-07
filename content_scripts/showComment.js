@@ -58,13 +58,15 @@ function displayComments(data) {
               <div class="comments-header">
               <div class="user-avatar">A</div>
               <div class="user-details">
-                <div class="show_comm_username">${entity.user.name}</div>
+                <div class="show_comm_username">${entity?.user?.name?.charAt(0).toUpperCase() + str.slice(1) || "A"}</div>
                 <div class="comment-time">${formatDateAndTime(
                   entity.created_at
                 )}</div>
               </div>
             </div>
-            <div class="comment-box comment-text">${entity.archor_text}</div>
+            <div class="comment-box">
+              <mark class="comment-text">${entity.archor_text}</mark>
+            </div>
             <div class="show_comm_username">${entity.comment}</div>
          </div>
         `;
