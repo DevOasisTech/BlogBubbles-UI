@@ -20,10 +20,22 @@ async function showAddCommentsPopup(params) {
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
         <div class="cta-buttons">
           <button class="cta-button post-button" id="post-button">Post</button>
-          <button class="cta-button cancel-button">Cancel</button>
         </div>
     </div>
 `;
+
+if (!params?.selectionText){
+  userPostCommentsForm = `
+  <div class="container">
+  <div class="success-message">You have added comment successfully.</div>
+      <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
+        <div class="cta-buttons">
+          <button class="cta-button post-button" id="post-button">Post</button>
+        </div>
+    </div>
+`;
+
+}
   let devider = `<div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px 0px"></div>`;
   let responses = `<div style="font-size: 22px; font-weight: bold; padding: 20px 0px;">All Comments</div>`;
 
@@ -50,7 +62,7 @@ async function createCommentApi(token, params) {
   const successMessage = document.querySelector(".success-message");
 
   const data = {
-    identifier: params?.identifier || {},
+    identifier: params?.identifier || null,
     url: window.location.href || "",
     comment: commentInput.value || "",
     identifier_id: params?.identifierId || null,
@@ -74,7 +86,7 @@ async function createCommentApi(token, params) {
     }
     const data = await response.json();
     successMessage.style.display = "block";
-    if(!params?.identifierId){
+    if(!params?.identifierId && data.position_id){
       chrome.runtime.sendMessage({ type: "highlightAnchorText", identifier: params?.identifier, 
       identifierId: data.position_id});
     }
@@ -202,16 +214,6 @@ function addStyles() {
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-}
-
-.cancel-button {
-    background-color: #f0f0f0;
-    color: #000;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
 }
   `;
 

@@ -4,7 +4,10 @@
       console.log('Received response:', response);
       if (response.isLoggedIn) {
           console.log("Add Comment- isLoggedIn");
-          chrome.runtime.sendMessage({ type: "ShowHome" });
+          chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
+            chrome.runtime.sendMessage({ type: "addCommentPopup"});
+            chrome.runtime.sendMessage({ type: "showCommentPopup"});
+          });
       } else{
         console.log("Add Comment- isLoggedOut");
         chrome.runtime.sendMessage({type: 'showLoginPopup'});
