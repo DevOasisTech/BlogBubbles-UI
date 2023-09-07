@@ -22,7 +22,7 @@ function fetchComments() {
   };
 
   let pageUrl = window.location.href || "";
-  const showCommentApiUrl = `http://localhost:8000/data/identifier?url=${pageUrl}`;
+  const showCommentApiUrl = `http://localhost:8000/data/identifier?link=${pageUrl}`;
   fetch(showCommentApiUrl, requestData)
     .then((response) => response.json())
     .then((data) => {

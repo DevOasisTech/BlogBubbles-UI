@@ -9,7 +9,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function showAddCommentsPopup(params) {
+  await sleep(40);
   let userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
@@ -114,11 +119,7 @@ function addStyles() {
     width: 100%;
     font-size: 12px;
   }
-  .highlighted-text {
-    background-color: rgb(210, 231, 209);
-    color: black;
-    cursor: pointer;
-  }
+  
   .comment-header {
     display: flex;
     justify-content: space-between;

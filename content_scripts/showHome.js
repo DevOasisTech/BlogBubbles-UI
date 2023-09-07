@@ -27,7 +27,6 @@ async function createLoggedInContainer() {
         loggedInHeader.style.padding = "50px";
         loggedInHeader.style.width = "400px";
         loggedInHeader.style.height = "100vh";
-        mainContainer.appendChild(loggedInHeader);
     
       const loggedInContainer = `
       <button id="close-button" class="close-button">X</button>
@@ -42,7 +41,8 @@ async function createLoggedInContainer() {
 
         let modalContentHtml = loggedInContainer + addCommentSection + showCommentSection;
         loggedInHeader.innerHTML = modalContentHtml;
-
+        
+        mainContainer.appendChild(loggedInHeader);
         document.body.appendChild(mainContainer);
     
         const closeButton = document.getElementById("close-button");
@@ -69,6 +69,7 @@ async function createLoggedInContainer() {
   if (mainContainerEle){
     mainContainerEle.style.display = 'flex';
   }
+  console.log("createLoggedInContainer");
 
 }
 
@@ -135,11 +136,7 @@ function addStyles() {
         width: 100%;
         font-size: 12px;
       }
-      .highlighted-text {
-        background-color: rgb(210, 231, 209);
-        color: black;
-        cursor: pointer;
-      }
+      
       .comment-header {
         display: flex;
         justify-content: space-between;
@@ -232,5 +229,5 @@ function addStyles() {
 
 (async function () {
   console.log("showHome popup.");
-  showHome();
+  await showHome();
 })();
