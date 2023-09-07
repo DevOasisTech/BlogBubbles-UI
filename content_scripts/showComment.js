@@ -10,7 +10,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function shoWCommentsPopup(params) {
-  console.log("Show Comment - start", params);
+
+  console.log("params",params);
   let modalContainer = document.createElement("div");
   modalContainer.style.position = "fixed";
   modalContainer.style.top = "0";
@@ -46,8 +47,23 @@ async function shoWCommentsPopup(params) {
         </div>
     </div>
 `;
+  let devider = `<div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px 0px"></div>`;
+  let responses = `<div style="font-size: 22px; font-weight: bold; padding: 20px 0px;">All Comments</div>`;
+  let commentBox = `<div class="comment-container">
+      <div class="comment-header">
+        <span class="username">User Name</span>
+        <span class="options">...</span>
+      </div>
+      <div class="comment-text">
+        This is the comment text. It can be quite long if needed.
+      </div>
+    </div>
+    <div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px, 0px"></div>
+    `;
 
-  modalContent.innerHTML = userPostCommentsForm;
+  let modalContentHtml = userPostCommentsForm + devider + responses + commentBox;
+  modalContent.innerHTML = modalContentHtml;
+
   modalContainer.appendChild(modalContent);
   document.body.appendChild(modalContainer);
 
@@ -59,6 +75,25 @@ async function shoWCommentsPopup(params) {
   closeButton.addEventListener("click", function () {
     modalContainer.remove();
   });
+
+  fetchComments()
+
+  function fetchComments() {
+    const loadingMessage = document.createElement('div');
+    loadingMessage.innerText = 'Loading...';
+    modalContent.appendChild(loadingMessage);
+    const showCommentApiUrl = `http://localhost:8000/data/comments/${params?.identifierId || null}`;
+    fetch(showCommentApiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        modalContent.removeChild(loadingMessage);
+        console.log("data",data);
+        })
+      .catch((error) => {
+        console.error('Error fetching comments:', error);
+      });
+  }
+
 
   const data = {
     identifier: params?.identifier || {},
@@ -136,7 +171,20 @@ function addStyles() {
     color: black;
     cursor: pointer;
   }
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 
+.comment-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+  }
 
   .user-info {
     display: flex;
@@ -153,7 +201,6 @@ function addStyles() {
 
   .username {
     font-size: 16px;
-    font-weight: bold;
   }
 
   .input-container textarea {
