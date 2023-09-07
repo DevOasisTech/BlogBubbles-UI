@@ -1,3 +1,13 @@
+  // Function to hide tooltip
+  function hideTooltip() {
+    const tooltip = document.getElementById('myTooltip');
+    if (tooltip == null) {
+      return;
+    }
+    tooltip.style.display = 'none';
+  }
+
+
 /**
  *
  * @returns
@@ -10,8 +20,7 @@ function getIdentifier() {
 
    // if mark element is an immediate sibling then fetch its text count and append in offset.
     if (anchorNode.localName == 'mark') {
-      
-      // get Id of the mark node and use it in api call
+      // Todo: get Id of the mark node and use it in api call
     }
 
   let identifier = {};
@@ -39,11 +48,17 @@ function getIdentifier() {
     nodePath["localName"] = anchorNode.localName; // 'div
     nodePath["tagName"] = anchorNode.tagName; // 'DIV'
     nodePath["prevSiblingCount"] = 0;
+    let ignoreTextNode = false;
     if (!nodePath["id"]){
+      if (anchorNode.localName == 'mark' || anchorNode.nodeType === Node.TEXT_NODE){
+        ignoreTextNode = true;
+      }
       let siblingNode =  anchorNode.previousSibling;
       while (siblingNode && siblingNode != null) {
-        if (siblingNode.localName == 'mark') {
-          if (parentLevel == 0){
+        if (ignoreTextNode && (siblingNode.localName == 'mark' || 
+            siblingNode.nodeType === Node.TEXT_NODE)) {
+              ignoreTextNode = true;
+          if (parentLevel == 0 && nodePath["prevSiblingCount"] == 0){
             // fetch the text in mark and add in offsets in anchorOffset & focusOffset
             let prevText = siblingNode.textContent;
             let prevTextLength = prevText.length;
@@ -55,6 +70,11 @@ function getIdentifier() {
           }
         }else{
           nodePath["prevSiblingCount"] = nodePath["prevSiblingCount"] + 1;
+          if (siblingNode.localName == 'mark' || 
+              siblingNode.nodeType === Node.TEXT_NODE){
+                ignoreTextNode = true; 
+          }
+          ignoreTextNode = false;
         }
   
         siblingNode = siblingNode.previousSibling;
@@ -77,7 +97,9 @@ function getIdentifier() {
 
   identifier["nodePaths"] = nodePaths;
   // console.log("--------------identifier--------------",JSON.stringify(identifier));
-  return {identifier, selectionText};
+  let identifierId = null;
+
+  return {identifier, identifierId, selectionText};
 }
 
 /**
@@ -89,6 +111,7 @@ function showIdentifier(identifier, selectionText) {
 
   console.log("--------------showIdentifier start--------------", JSON.stringify(identifier));
   console.log("--------------selectionText--------------", selectionText);
+  // return;
 
   let inputNodePaths = identifier["nodePaths"];
 
@@ -115,16 +138,24 @@ function showIdentifier(identifier, selectionText) {
 
 
     let currentSiblingCount = currentNodePath.prevSiblingCount;
+    let ignoreTextNode = false;
     while(currentSiblingCount > 0){
       if (!currentElement){
         console.log("--------------Missing Sibling--------------",currentSiblingCount);
         return;
       }
-      if (currentElement.localName != 'mark') {
+
+      if (!ignoreTextNode || (currentElement.localName != 'mark' && currentElement.nodeType != Node.TEXT_NODE)){
         currentSiblingCount--;
+        if (currentElement.localName == 'mark' && currentElement.nodeType == Node.TEXT_NODE){
+          ignoreTextNode = true;
+        } else {
+          ignoreTextNode = false;
+        }
       }
       currentElement = currentElement.nextSibling;    
     }
+
     if (currentLevel == 0) {
       break;
     }
@@ -151,7 +182,7 @@ function showIdentifier(identifier, selectionText) {
 
   console.log("--------------currentElement is Node Type--------------", currentElement.nodeType);
     
-  //Todo: add data ids in mark element
+    //Todo: add data ids in mark element
   // Todo: fix offset. n position is shifted just after n+1 mark element
   // Todo: Fix getIdentifier the offsets are -1 if mark element is there. prevSiblingCount is wrong
  if (currentElement.nodeType === Node.TEXT_NODE || currentElement.localName == 'mark') {
@@ -178,6 +209,7 @@ function showIdentifier(identifier, selectionText) {
           currentElement =  currentElement.nextSibling;    
           continue;
         }
+
         if (startOffset < 0){
           startOffset = 0;
         }
@@ -321,7 +353,8 @@ addStyles();
     if (response.isLoggedIn) {
       console.log("Add Comment- isLoggedIn");
       // shoWCommentsPopup();
-      let {identifier, selectionText} = getIdentifier();
+      let {identifier, identifierId, selectionText} = getIdentifier();
+      hideTooltip();
       showIdentifier(identifier, selectionText);
     } else {
       console.log("Add Comment- isLoggedOut");
