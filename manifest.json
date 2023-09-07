@@ -12,13 +12,17 @@
       {
         "matches": ["<all_urls>"],
         "js": ["content_scripts/tooltip.js"]
-      }
+      },
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_scripts/onPageLoad.js"]
+      }      
     ],
     "host_permissions": [
       "<all_urls>"
     ],
     "permissions": [
-
+      "webRequest",
       "activeTab",
       "contextMenus", 
       "identity",

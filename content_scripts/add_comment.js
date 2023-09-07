@@ -32,7 +32,7 @@ function getIdentifier() {
 
   //Todo: Handle opposite selection for anchorOffset and focusOffset
   let selectionNodeData = {
-    // textContent: selection.toString(),
+    textContent: selection.toString(),
     anchorOffset: selection.anchorOffset, // chaange for mark
     focusOffset: selection.focusOffset, // change for mark
   };

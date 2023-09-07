@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     message.type
   );
   if (message.type === "Tab-highlightAnchorText") {
-    showIdentifier(message.params.identifier, message.params.identifierId, message.params.selectionText);
+    showIdentifier(message.params.identifier, message.params.identifierId);
     return false;
   }
 });
@@ -14,14 +14,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  * @param {*} identifier
  * @returns
  */
-function showIdentifier(identifier, identifierId, selectionText) {
-
-  console.log("--------------showIdentifier start--------------", JSON.stringify(identifier));
-  console.log("other params===", identifierId, selectionText);
-
-  if (!identifierId) {
-    identifierId = "dummy-id";
-  }
+function showIdentifier(identifier, identifierId) {
+  console.log("--------------showIdentifier start--------------");
+  // console.log("other params===", JSON.stringify(identifier), identifierId);
 
   let inputNodePaths = identifier["nodePaths"];
 
@@ -39,7 +34,7 @@ function showIdentifier(identifier, identifierId, selectionText) {
 
 
   while (currentLevel >= 0) {
-    console.log("--------------currentLevel--------------",currentLevel, currentElement);
+    // console.log("--------------currentLevel--------------",currentLevel, currentElement);
     if (!currentElement) {
       console.log("--------------Missing currentElement--------------",currentLevel);
       return;
@@ -79,7 +74,7 @@ function showIdentifier(identifier, identifierId, selectionText) {
   let startOffset = inputSelectionNodeData.anchorOffset;
   let endOffset = inputSelectionNodeData.focusOffset;
 
-  console.log("lastElement for selection--------------",currentLevel, currentElement, inputSelectionNodeData);
+  // console.log("lastElement for selection--------------",currentLevel, currentElement, inputSelectionNodeData);
 
   // Check for valid offsets
   if (
@@ -90,13 +85,13 @@ function showIdentifier(identifier, identifierId, selectionText) {
     return;
   }
 
-  console.log("--------------currentElement is Node Type--------------", currentElement.nodeType);
+  // console.log("--------------currentElement is Node Type--------------", currentElement.nodeType);
     
     //Todo: add data ids in mark element
   // Todo: fix offset. n position is shifted just after n+1 mark element
   // Todo: Fix getIdentifier the offsets are -1 if mark element is there. prevSiblingCount is wrong
  if (currentElement.nodeType === Node.TEXT_NODE || currentElement.localName == 'mark') {
-    console.log("==currentElement===",currentElement, startOffset, endOffset);
+    // console.log("==currentElement===",currentElement, startOffset, endOffset);
     while(endOffset > 0){
       if (!currentElement){
         console.log("--------------Missing Sibling--------------",currentLevel);
@@ -169,5 +164,5 @@ function showIdentifier(identifier, identifierId, selectionText) {
 
 (async function () {
       console.log("Highlight Anchor Text - start");
-      showIdentifier(identifier, identifierId, selectionText);
+      showIdentifier(identifier, identifierId);
 })();

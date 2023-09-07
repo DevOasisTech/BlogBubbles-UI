@@ -207,8 +207,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }  else if (message.type === 'highlightAnchorText') {
     const params = {
       "identifier": message.identifier,
-      "identifierId": message.identifierId,
-      "selectionText": message.selectionText
+      "identifierId": message.identifierId
     }
     console.log("highlightAnchorText params", params);
     HighlightAnchorText(params); 
