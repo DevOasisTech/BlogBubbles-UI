@@ -13,6 +13,9 @@ function addStyles() {
         align-items: center;
         gap: 8px;
       }
+      body{
+        font-family: 'Roboto', sans-serif;
+      }
       .logo-text{        
         font-size: 24px;
         font-weight: 600;
@@ -31,6 +34,8 @@ function addStyles() {
         align-items: center;
         gap: 10px;
         justify-content: space-between;
+        position: sticky;
+        bottom: 10px;
       }
       .username {
         font-size: 16px;
@@ -128,6 +133,7 @@ function addStyles() {
     }
     
     .comment-input {
+        font-size: 14px;
         width: 100%;
         padding: 14px 10px !important;
         margin-bottom: 20px;

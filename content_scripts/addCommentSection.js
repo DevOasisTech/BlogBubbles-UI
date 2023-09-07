@@ -34,7 +34,7 @@ async function showAddCommentsPopup(params) {
   <div class="success-message">You have added comment successfully.</div>
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
         <div class="cta-buttons">
-          <button class="cta-button post-button" id="post-button">Post</button>
+          <button class="cta-button post-button" id="post-button">Comment</button>
         </div>
     </div>
 `;
@@ -88,7 +88,7 @@ async function createCommentApi(token, params) {
     successMessage.style.display = "block";
     commentInput.value = "";
 
-    if (data.anchor_text == ""){
+    if (!params?.selectionText){
       chrome.runtime.sendMessage({ type: "showCommentPopup", kind: "page"});
     }else{
       chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: params?.identifier, 

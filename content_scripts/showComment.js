@@ -35,7 +35,20 @@ function fetchComments(params) {
 }
 
 function fetchCommentsForPage() {
+  const showCommentApiUrl = `http://localhost:8000/v1/comments?url=${
+    window.location.href
+  }`;
 
+  fetch(showCommentApiUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("showCommentApi Page", data);
+      displayComments(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching comments:", error);
+      noCommentsPresent();
+    });
 }
 
 function fetchCommentsForSelection(identifierId) {
@@ -67,23 +80,41 @@ function displayComments(data) {
   let htmlBlocks = '';
   if (data?.length > 0) {
     data.forEach((entity) => {
-      const commentboxUi = `
+      let commentboxUi = `
          <div class="box-background">
               <div class="comments-header">
-              <div class="user-avatar">${entity?.user?.name[0].toUpperCase()}</div>
-              <div class="user-details">
-                <div class="show_comm_username">${entity?.user?.name}</div>
-                <div class="comment-time">${formatDateAndTime(
-                  entity.created_at
-                )}</div>
+                <div class="user-avatar">${entity?.user?.name[0].toUpperCase()}</div>
+                <div class="user-details">
+                  <div class="show_comm_username">${entity?.user?.name}</div>
+                  <div class="comment-time">${formatDateAndTime(
+                    entity.created_at
+                  )}</div>
+                </div>
               </div>
-            </div>
-            <div class="comment-box">
-              <mark class="comment-text">${entity.archor_text}</mark>
-            </div>
             <div class="show_comm_username">${entity.comment}</div>
          </div>
         `;
+
+        if (entity.archor_text){
+          commentboxUi = `
+          <div class="box-background">
+               <div class="comments-header">
+               <div class="user-avatar">${entity?.user?.name[0].toUpperCase()}</div>
+               <div class="user-details">
+                 <div class="show_comm_username">${entity?.user?.name}</div>
+                 <div class="comment-time">${formatDateAndTime(
+                   entity.created_at
+                 )}</div>
+               </div>
+             </div>
+               <div class="comment-box">
+               <mark class="comment-text">${entity.archor_text}</mark>
+             </div>
+             <div class="show_comm_username">${entity.comment}</div>
+          </div>
+         `;
+        }
+
         htmlBlocks = htmlBlocks +   commentboxUi;    
     });
     commentContainer.innerHTML = htmlBlocks;
