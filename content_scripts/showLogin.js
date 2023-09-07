@@ -23,7 +23,7 @@ async function showSignupPopup() {
   // Create the login form
   let loginForm = `
   <button id="close-button" class="close-button">X</button>
-    <div class="description">Blog Bubbles</div>
+    <div class="description">Web Whisper</div>
     <div class="input-container">
       <input type="email" id="email" placeholder="Enter your email" required>
     </div>
