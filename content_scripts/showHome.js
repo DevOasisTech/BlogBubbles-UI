@@ -28,7 +28,7 @@ async function showHome() {
         modalContainer.appendChild(modalContent);
 
         const loggedInContainer = `
-        <button id="close-button" class="close-button">X</button>
+          <button id="close-button" class="close-button">X</button>
             <div class="logged-in-container">
                 <div class="username">Logged in as: ${userData.username}</div>
                 <button id="logout-btn" class="logout-button">Logout</button>
@@ -59,19 +59,6 @@ async function showHome() {
   });
 }
 
-function getUserDataFromToken(token) {
-  try {
-    const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-    const userData = {
-      username: tokenPayload.email,
-    };
-    console.log("Try", userData);
-    return userData;
-  } catch (error) {
-    console.error("Error decoding token or extracting user data:", error);
-    return null;
-  }
-}
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `

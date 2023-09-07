@@ -80,12 +80,9 @@ async function showSignupPopup() {
       const data = await response.json();
       const authToken = data?.token;
       setToken(authToken, email);
-      // localStorage.setItem(tokenKey, authToken);
-
       console.log("Clicked - ShowHome");
       modalContainer.remove();
       chrome.runtime.sendMessage({ type: "ShowHome" });
-
       console.log("API response:", data);
     } catch (error) {
       console.error("API error:", error);
