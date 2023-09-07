@@ -14,7 +14,6 @@ async function showAddCommentsPopup(params) {
   let userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
-    <div class="user-name">User Name</div>
       <div class="comment-box">
        ${params?.selectionText}
       </div>

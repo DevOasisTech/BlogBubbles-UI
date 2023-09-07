@@ -117,7 +117,7 @@ function getIdentifier() {
         chrome.runtime.sendMessage({ type: "addCommentPopup", identifier: identifier, 
         identifierId: identifierId, selectionText: selectionText });
         chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
-        identifierId: identifierId, selectionText: selectionText },);
+        identifierId: identifierId, selectionText: selectionText });
       });
     } else {
       console.log("Add Comment- isLoggedOut");

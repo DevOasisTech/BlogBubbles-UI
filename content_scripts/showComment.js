@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     message.type
   );
   if (message.type === "Tab-showCommentPopup") {
-    showCommentsPopup(message.params);
+    // showCommentsPopup(message.params);
     return false;
   }
 });

@@ -32,7 +32,7 @@ async function createLoggedInContainer() {
       const loggedInContainer = `
       <button id="close-button" class="close-button">X</button>
         <div class="logged-in-container">
-            <div class="username" id="login-user-name">Logged in as: ${userData.username}</div>
+            <div class="username" id="login-user-name">${userData.username}</div>
             <button id="logout-btn" class="logout-button">Logout</button>
         </div>
         `;

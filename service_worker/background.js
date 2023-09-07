@@ -91,7 +91,7 @@ function AddCommentScript() {
       // Execute your content script
       chrome.scripting.executeScript({
         target: { tabId: activeTab.id },
-        files: ["content_scripts/add_comment.js"]
+        files: ["content_scripts/addCommentInit.js"]
       }, function() {
         // Optional callback after the script has been injected
         if (chrome.runtime.lastError) {
@@ -110,7 +110,7 @@ function AddCommentPopup(params) {
       // Execute your content script
       chrome.scripting.executeScript({
         target: { tabId: activeTab.id },
-        files: ["content_scripts/addComment.js"]
+        files: ["content_scripts/addCommentSection.js"]
       }, function() {
         // Optional callback after the script has been injected
         if (chrome.runtime.lastError) {
