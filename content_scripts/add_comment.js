@@ -114,8 +114,10 @@ function getIdentifier() {
       let {identifier, identifierId, selectionText} = getIdentifier();
       hideTooltip();
       chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
-        chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
+        chrome.runtime.sendMessage({ type: "addCommentPopup", identifier: identifier, 
         identifierId: identifierId, selectionText: selectionText });
+        chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
+        identifierId: identifierId, selectionText: selectionText },);
       });
     } else {
       console.log("Add Comment- isLoggedOut");

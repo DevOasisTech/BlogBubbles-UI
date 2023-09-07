@@ -103,6 +103,27 @@ function AddCommentScript() {
   });
 }
 
+function AddCommentPopup(params) {
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+
+      // Execute your content script
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/addComment.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.log("ShowCommentScript error");
+          console.error(chrome.runtime.lastError);
+        } else{
+          chrome.tabs.sendMessage(activeTab.id, { type: "Tab-showCommentPopup", params: params });
+        }
+      });
+    }
+  });
+}
+
 function ShowCommentPopup(params) {
   getActiveTab().then((activeTab) => {
     if(activeTab) {
@@ -163,16 +184,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.type === 'ShowHome') {
     console.log("Inside");
     ShowHome(); 
+    return false; 
   } else if (message.type === 'executeAddCommentScript') {
     AddCommentScript(); 
     return false; 
-  } else if (message.type === 'showCommentPopup') {
+  } else if (message.type === 'addCommentPopup') {
     const params = {
       "identifier": message.identifier,
       "identifierId": message.identifierId,
       "selectionText": message.selectionText
     }
-    console.log("showCommentPopup params", params);
+    AddCommentPopup(params); 
+    return false; 
+  }else if (message.type === 'showCommentPopup') {
+    const params = {
+      "identifier": message.identifier,
+      "identifierId": message.identifierId,
+      "selectionText": message.selectionText
+    }
     ShowCommentPopup(params); 
     return false; 
   }  else if (message.type === 'highlightAnchorText') {
