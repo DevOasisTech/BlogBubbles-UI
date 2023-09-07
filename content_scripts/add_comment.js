@@ -17,11 +17,15 @@ function getIdentifier() {
   console.log("getIdentifier==============");
   let selection = window.getSelection();
   let anchorNode = selection.anchorNode;
-
-   // if mark element is an immediate sibling then fetch its text count and append in offset.
-    if (anchorNode.localName == 'mark') {
-      // Todo: get Id of the mark node and use it in api call
-    }
+  
+  
+  let parentElement = anchorNode.parentElement;
+  let identifierId = null;
+  if (parentElement.localName == 'mark') {
+      if(parentElement.textContent == selection.toString()){
+        identifierId = parentElement.getAttribute('data-identifier-id');
+      }
+  }
 
   let identifier = {};
   let selectionText = selection.toString();
@@ -53,6 +57,7 @@ function getIdentifier() {
       if (anchorNode.localName == 'mark' || anchorNode.nodeType === Node.TEXT_NODE){
         ignoreTextNode = true;
       }
+
       let siblingNode =  anchorNode.previousSibling;
       while (siblingNode && siblingNode != null) {
         if (ignoreTextNode && (siblingNode.localName == 'mark' || 
@@ -97,7 +102,7 @@ function getIdentifier() {
 
   identifier["nodePaths"] = nodePaths;
   // console.log("--------------identifier--------------",JSON.stringify(identifier));
-  let identifierId = null;
+
 
   return {identifier, identifierId, selectionText};
 }
@@ -107,11 +112,14 @@ function getIdentifier() {
  * @param {*} identifier
  * @returns
  */
-function showIdentifier(identifier, selectionText) {
+function showIdentifier(identifier, identifierId, selectionText) {
 
   console.log("--------------showIdentifier start--------------", JSON.stringify(identifier));
-  console.log("--------------selectionText--------------", selectionText);
-  // return;
+  console.log("other params===", identifierId, selectionText);
+
+  if (!identifierId) {
+    identifierId = "dummy-id";
+  }
 
   let inputNodePaths = identifier["nodePaths"];
 
@@ -229,6 +237,8 @@ function showIdentifier(identifier, selectionText) {
         // Now, middleNode contains the text to be highlighted. Create a new element to wrap it.
         let highlightMark = document.createElement("mark");
         highlightMark.className = "highlighted-text";
+        highlightMark.setAttribute('data-identifier-id', identifierId);
+
 
         // Replace middleNode with highlightMark, putting middleNode inside highlightMark.
         highlightMark.appendChild(middleNode);
@@ -265,7 +275,7 @@ function showIdentifier(identifier, selectionText) {
       hideTooltip();
       chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
         identifierId: identifierId, selectionText: selectionText });
-      // showIdentifier(identifier, selectionText);
+      // showIdentifier(identifier, identifierId, selectionText);
     } else {
       console.log("Add Comment- isLoggedOut");
       chrome.runtime.sendMessage({ type: "showLoginPopup" });
