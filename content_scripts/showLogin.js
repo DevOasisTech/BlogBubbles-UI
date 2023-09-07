@@ -23,7 +23,10 @@ async function showSignupPopup() {
   // Create the login form
   let loginForm = `
   <button id="close-button" class="close-button">X</button>
-    <div class="description">Web Whisper</div>
+    <div class="logo-container" style="margin-top:-15px; margin-bottom: 35px;">
+    <img src='https://static.truesparrow.com/assets/images/word-wishper.png' height='52' width='52' alt='Logo' />
+    <div class="logo-text">WebWishper</div>
+  </div>
     <div class="input-container">
       <input type="email" id="email" placeholder="Enter your email" required>
     </div>
@@ -84,7 +87,7 @@ async function showSignupPopup() {
       modalContainer.remove();
       chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
         chrome.runtime.sendMessage({ type: "addCommentPopup"});
-        chrome.runtime.sendMessage({ type: "showCommentPopup"});
+        chrome.runtime.sendMessage({ type: "showCommentPopup", kind: "page"});
       });
       console.log("API response:", data);
     } catch (error) {

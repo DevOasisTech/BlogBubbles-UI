@@ -27,6 +27,7 @@ function addStyles() {
         margin-top: 30px;
       }
       .logged-in-container {
+        padding: 20px;
         background-color: #fff;
         text-align: center;
         margin-top: auto;
@@ -35,7 +36,7 @@ function addStyles() {
         gap: 10px;
         justify-content: space-between;
         position: sticky;
-        bottom: 10px;
+        bottom: -20px;
       }
       .username {
         font-size: 16px;
