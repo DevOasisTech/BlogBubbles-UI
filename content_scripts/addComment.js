@@ -34,6 +34,19 @@ async function showAddCommentsPopup(params) {
   addCommentSection.innerHTML = modalContentHtml;
 
   const postButton = document.getElementById("post-button");
+  let token = "";
+  chrome.storage.local.get(["token"], function (result) {
+    token = result.token;
+  });
+  
+  postButton.addEventListener("click", async function () {  
+    createCommentApi(token, params)
+  });
+
+
+}
+
+async function createCommentApi(token, params) {
   const commentInput = document.getElementById("comment-input");
   const successMessage = document.querySelector(".success-message");
 
@@ -45,52 +58,33 @@ async function showAddCommentsPopup(params) {
     anchor_text: params?.selectionText || "",
   };
 
-  let requestData = {};
+  const addCommentApiUrl = "http://localhost:8000/data/comments";
+  let requestData = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+    body: JSON.stringify(data)
+  };
 
-  chrome.storage.local.get(["token"], function (result) {
-    token = result.token;
-    requestData = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token: token,
-      },
-      body: JSON.stringify(data),
-    };
-  });
-
-  postButton.addEventListener("click", async function () {
-    const addCommentApiUrl = "http://localhost:8000/data/comments";
-    try {
-      const response = await fetch(addCommentApiUrl, requestData);
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-      const data = await response.json();
-      successMessage.style.display = "block";
-      chrome.runtime.sendMessage({ type: "highlightAnchorText", identifier: params?.identifier , 
-        identifierId: data.identifierId, selectionText: params?.selectionText });
-      setTimeout(() => {
-        successMessage.style.display = "none";
-      }, 2000);
-    } catch (error) {
-      console.error("API error:", error);
-      // errorMsg.textContent = error.message;
-    }
-  });
-}
-
-function getUserDataFromToken(token) {
   try {
-    const tokenPayload = JSON.parse(atob(token.split(".")[1]));
-    const userData = {
-      username: tokenPayload.email,
-    };
-    console.log("Try", userData);
-    return userData;
+    const response = await fetch(addCommentApiUrl, requestData);
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    }
+    const data = await response.json();
+    successMessage.style.display = "block";
+    if(!params?.identifierId){
+      chrome.runtime.sendMessage({ type: "highlightAnchorText", identifier: params?.identifier, 
+      identifierId: data.position_id});
+    }
+    setTimeout(() => {
+      successMessage.style.display = "none";
+    }, 2000);
   } catch (error) {
-    console.error("Error decoding token or extracting user data:", error);
-    return null;
+    console.error("API error:", error);
+    // errorMsg.textContent = error.message;
   }
 }
 
