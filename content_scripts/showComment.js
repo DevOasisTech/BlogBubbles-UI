@@ -70,9 +70,9 @@ function displayComments(data) {
       const commentboxUi = `
          <div class="box-background">
               <div class="comments-header">
-              <div class="user-avatar">A</div>
+              <div class="user-avatar">${entity?.user?.name[0].toUpperCase()}</div>
               <div class="user-details">
-                <div class="show_comm_username">A</div>
+                <div class="show_comm_username">${entity?.user?.name}</div>
                 <div class="comment-time">${formatDateAndTime(
                   entity.created_at
                 )}</div>

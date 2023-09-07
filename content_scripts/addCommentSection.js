@@ -23,7 +23,7 @@ async function showAddCommentsPopup(params) {
     </div>
       <input type="text" class="comment-input" id="comment-input" placeholder="Write a comment...">
         <div class="cta-buttons">
-          <button class="cta-button post-button" id="post-button">Post</button>
+          <button class="cta-button post-button" id="post-button">Comment</button>
         </div>
     </div>
 `;
@@ -86,6 +86,16 @@ async function createCommentApi(token, params) {
     }
     const data = await response.json();
     successMessage.style.display = "block";
+    commentInput.value = "";
+
+    if (data.anchor_text == ""){
+      chrome.runtime.sendMessage({ type: "showCommentPopup", kind: "page"});
+    }else{
+      chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: params?.identifier, 
+      identifierId: data.position_id, selectionText: params?.selectionText, kind: "selection"});
+    }
+
+
     if (!params?.identifierId && data.position_id) {
       chrome.runtime.sendMessage({
         type: "highlightAnchorText",
