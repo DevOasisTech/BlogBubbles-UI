@@ -4,41 +4,78 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       "--------------ShowComment message.type--------------",
       message.type
     );
-    // showCommentsPopup(message.params);
+    showCommentsPopup(message.params);
     return false;
   }
 });
 
 async function showCommentsPopup(params) {
-  // console.log("showCommentsPopup====", params);
-  let commentBox = `<div class="comment-container">
-        <div class="comment-header">
-          <span class="show_comm_username">User Name</span>
-          <span class="options">...</span>
-        </div>
-        <div class="comment-text">
-          This is the comment text. It can be quite long if needed.
-        </div>
-      </div>
-      <div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px, 0px"></div>
-      `;
+  console.log("345678", params);
 
+  let commentBox = `<div class="comment-container" id="comment-container">`;
   const showCommentSection = document.getElementById("show-comment-section");
-
   showCommentSection.innerHTML = commentBox;
 
   const loadingMessage = document.createElement("div");
   loadingMessage.innerText = "Loading...";
-  showCommentSection.appendChild(loadingMessage);
-  const showCommentApiUrl = `http://localhost:8000/data/comments/1`;
+  fetchComments(params?.identifierId);
+}
+
+function fetchComments(identifierId) {
+  const showCommentApiUrl = `http://localhost:8000/data/comments/${
+    identifierId || null
+  }`;
+
   fetch(showCommentApiUrl)
     .then((response) => response.json())
     .then((data) => {
-      showCommentSection.removeChild(loadingMessage);
+      console.log("34567", data);
+      displayComments(data);
     })
     .catch((error) => {
       console.error("Error fetching comments:", error);
+      noCommentsPresent();
     });
+}
+
+function displayComments(data) {
+  const commentContainer = document.getElementById("comment-container");
+
+  if (data?.length > 0) {
+    data.forEach((entity) => {
+      const headerContainer = document.createElement("div");
+      headerContainer.className = "comment-header";
+
+      const usernameElement = document.createElement("div");
+      usernameElement.className = "show_comm_username";
+      usernameElement.textContent = entity.user.name;
+
+      headerContainer.appendChild(usernameElement);
+
+      const commentTextElement = document.createElement("div");
+      commentTextElement.className = "comment-text";
+      commentTextElement.textContent = entity.comment;
+
+      const divider = document.createElement("div");
+      divider.style.borderBottom = "1px solid rgb(242, 242, 242)";
+      divider.style.padding = "20px 0px";
+
+      commentContainer.appendChild(headerContainer);
+      commentContainer.appendChild(commentTextElement);
+      commentContainer.appendChild(divider);
+    });
+  } else {
+    noCommentsPresent();
+  }
+}
+
+function noCommentsPresent() {
+  const commentContainer = document.getElementById("comment-container");
+  const noCommentsMessage = document.createElement("div");
+  noCommentsMessage.textContent = "No comments found for this selection";
+  noCommentsMessage.style.opacity = "0.8";
+  noCommentsMessage.style.color = "black";
+  commentContainer.appendChild(noCommentsMessage);
 }
 
 function addStyles() {
