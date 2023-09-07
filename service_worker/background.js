@@ -204,3 +204,11 @@ chrome.contextMenus.create({
   });
 
 });
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
+  // Inject your content script whenever the URL changes in an SPA
+  chrome.scripting.executeScript({
+      target: { tabId: details.tabId },
+      files: ['content_scripts/onPageLoad.js']
+  });
+});

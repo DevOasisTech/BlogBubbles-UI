@@ -22,19 +22,24 @@ function getIdentifier() {
   let parentElement = anchorNode.parentElement;
   let identifierId = null;
   if (parentElement.localName == 'mark') {
-      if(parentElement.textContent == selection.toString()){
+      if(parentElement.textContent == anchorNode.textContent){
         identifierId = parentElement.getAttribute('data-identifier-id');
       }
   }
 
   let identifier = {};
-  let selectionText = selection.toString();
+  let selectionText = anchorNode.textContent;
+
+  let focusOffsetForNextNode = selection.focusOffset;
+  if(focusOffsetForNextNode == 0 ){
+    focusOffsetForNextNode = selection.anchorNode.textContent.length;
+  }
 
   //Todo: Handle opposite selection for anchorOffset and focusOffset
   let selectionNodeData = {
-    textContent: selection.toString(),
+    textContent: anchorNode.textContent,
     anchorOffset: selection.anchorOffset, // chaange for mark
-    focusOffset: selection.focusOffset, // change for mark
+    focusOffset: focusOffsetForNextNode, // change for mark
   };
   identifier["selectionNodeData"] = selectionNodeData;
   identifier["idLevel"] = -1;

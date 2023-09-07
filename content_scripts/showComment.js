@@ -18,7 +18,7 @@ async function showCommentsPopup(params) {
 
   let commentBox = `<div class="comment-container" id="comment-container">`;
   const showCommentSection = document.getElementById("show-comment-section");
-  await sleep(40);
+  await sleep(60);
   showCommentSection.innerHTML = commentBox;
 
   const loadingMessage = document.createElement("div");
@@ -124,9 +124,10 @@ function displayComments(data) {
 }
 
 function noCommentsPresent() {
+  console.log("noCommentsPresent");
   const commentContainer = document.getElementById("comment-container");
   const noCommentsMessage = document.createElement("div");
-  noCommentsMessage.textContent = "No comments found for this selection";
+  noCommentsMessage.textContent = "No comments found";
   noCommentsMessage.style.opacity = "0.8";
   noCommentsMessage.style.color = "black";
   commentContainer.appendChild(noCommentsMessage);

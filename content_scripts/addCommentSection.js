@@ -14,7 +14,7 @@ function sleep(ms) {
 }
 
 async function showAddCommentsPopup(params) {
-  await sleep(40);
+  await sleep(60);
   let userPostCommentsForm = `
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
@@ -102,6 +102,7 @@ async function createCommentApi(token, params) {
         identifier: params?.identifier,
         identifierId: data.position_id,
       });
+      params.identifierId = data.position_id;
     }
     setTimeout(() => {
       successMessage.style.display = "none";
