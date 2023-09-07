@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "OpenInk",
+    "name": "Web Whisper",
     "version": "1.0",
     "description": "Annotate and comment on web pages",
     "icons": {
@@ -45,7 +45,7 @@
       "default_icon": {             
         "16": "icons/48.png"  
       },
-      "default_title": "OpenInk"
+      "default_title": "Web Whisper"
     },
     "background": {
       "service_worker": "service_worker/background.js"
