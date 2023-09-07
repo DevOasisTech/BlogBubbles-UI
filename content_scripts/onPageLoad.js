@@ -4,32 +4,46 @@ console.log("Page has loaded!");
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `
+  .modal-content{
+    display: flex;
+    flex-direction: column;
+  }
       .logo-container{
         display: flex;
-        items-align: center;
+        align-items: center;
+        gap: 8px;
       }
-      .logo-text{
-        color: #0073e6;
+      .logo-text{        
         font-size: 24px;
         font-weight: 600;
+        background: -webkit-linear-gradient(#d522e4 0%, #2c28d8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      #add-comment-section{
+        margin-top: 30px;
       }
       .logged-in-container {
         background-color: #fff;
-        padding: 20px;
         text-align: center;
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: space-between;
       }
       .username {
         font-size: 16px;
-        margin-bottom: 20px;
       }
       .logout-button {
-        background-color: #0073e6;
-        color: #fff;
+        border: 1px solid #0073e6;
+        color: #0073e6;
         padding: 10px 20px;
-        border: none;
         border-radius: 4px;
         font-size: 16px;
         cursor: pointer;
+        background-color: #fff;
+
       }
       .close-button {
         position: absolute;

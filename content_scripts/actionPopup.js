@@ -6,7 +6,7 @@
           console.log("Add Comment- isLoggedIn");
           chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
             chrome.runtime.sendMessage({ type: "addCommentPopup"});
-            chrome.runtime.sendMessage({ type: "showCommentPopup"});
+            chrome.runtime.sendMessage({ type: "showCommentPopup", kind: "page"});
           });
       } else{
         console.log("Add Comment- isLoggedOut");

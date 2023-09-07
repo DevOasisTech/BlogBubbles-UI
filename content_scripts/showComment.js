@@ -14,7 +14,7 @@ function sleep(ms) {
 }
 
 async function showCommentsPopup(params) {
-  console.log("345678", params);
+  console.log("showCommentsPopup", params);
 
   let commentBox = `<div class="comment-container" id="comment-container">`;
   const showCommentSection = document.getElementById("show-comment-section");
@@ -27,6 +27,11 @@ async function showCommentsPopup(params) {
 }
 
 function fetchComments(identifierId) {
+  if (identifierId == null){
+    noCommentsPresent();
+    return;
+  }
+
   const showCommentApiUrl = `http://localhost:8000/v1/comments?identifier_id=${
     identifierId || null
   }`;
@@ -34,6 +39,7 @@ function fetchComments(identifierId) {
   fetch(showCommentApiUrl)
     .then((response) => response.json())
     .then((data) => {
+      console.log("showCommentApi", data);
       displayComments(data);
     })
     .catch((error) => {
