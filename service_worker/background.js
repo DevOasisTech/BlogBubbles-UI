@@ -124,6 +124,28 @@ function ShowCommentPopup(params) {
   });
 }
 
+function HighlightAnchorText(params) {
+  getActiveTab().then((activeTab) => {
+    if(activeTab) {
+
+      // Execute your content script
+      chrome.scripting.executeScript({
+        target: { tabId: activeTab.id },
+        files: ["content_scripts/highlightAnchorText.js"]
+      }, function() {
+        // Optional callback after the script has been injected
+        if (chrome.runtime.lastError) {
+          console.log("HighlightAnchorText error");
+          console.error(chrome.runtime.lastError);
+        } else{
+          chrome.tabs.sendMessage(activeTab.id, { type: "Tab-highlightAnchorText", params: params });
+        }
+      });
+    }
+  });
+}
+
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("--------------message.type--------------",message.type);
   if (message.type === 'checkLoginStatus') {
@@ -150,8 +172,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       "identifierId": message.identifierId,
       "selectionText": message.selectionText
     }
-    console.log("message params", params);
+    console.log("showCommentPopup params", params);
     ShowCommentPopup(params); 
+    return false; 
+  }  else if (message.type === 'highlightAnchorText') {
+    const params = {
+      "identifier": message.identifier,
+      "identifierId": message.identifierId,
+      "selectionText": message.selectionText
+    }
+    console.log("highlightAnchorText params", params);
+    HighlightAnchorText(params); 
     return false; 
   }
    else {

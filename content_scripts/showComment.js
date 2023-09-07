@@ -104,6 +104,8 @@ async function shoWCommentsPopup(params) {
       }
       const data = await response.json();
       successMessage.style.display = "block";
+      chrome.runtime.sendMessage({ type: "highlightAnchorText", identifier: params?.identifier , 
+        identifierId: data.identifierId, selectionText: params?.selectionText });
       setTimeout(() => {
         successMessage.style.display = "none";
       }, 2000);
