@@ -1,24 +1,36 @@
+  // Function to hide tooltip
+  function hideTooltip() {
+    const tooltip = document.getElementById('myTooltip');
+    if (tooltip == null) {
+      return;
+    }
+    tooltip.style.display = 'none';
+  }
+
+
 /**
  *
  * @returns
  */
 function getIdentifier() {
+ 
   console.log("getIdentifier==============");
-  let selection1 = window.getSelection();
-  let anchorNode = selection1.anchorNode;
+  let selection = window.getSelection();
+  let anchorNode = selection.anchorNode;
+
+   // if mark element is an immediate sibling then fetch its text count and append in offset.
+    if (anchorNode.localName == 'mark') {
+      // Todo: get Id of the mark node and use it in api call
+    }
 
   let identifier = {};
+  let selectionText = selection.toString();
+
+  //Todo: Handle opposite selection for anchorOffset and focusOffset
   let selectionNodeData = {
-    textContent: selection1.toString(),
-    anchorOffset: selection1.anchorOffset,
-    focusOffset: selection1.focusOffset,
-    contextBefore: selection1.anchorNode.textContent.slice(
-      0,
-      selection1.anchorOffset
-    ),
-    contextAfter: selection1.focusNode.textContent.slice(
-      selection1.focusOffset
-    ),
+    // textContent: selection.toString(),
+    anchorOffset: selection.anchorOffset, // chaange for mark
+    focusOffset: selection.focusOffset, // change for mark
   };
   identifier["selectionNodeData"] = selectionNodeData;
   identifier["idLevel"] = -1;
@@ -35,12 +47,38 @@ function getIdentifier() {
     nodePath["nodeName"] = anchorNode.nodeName; // 'DIV'
     nodePath["localName"] = anchorNode.localName; // 'div
     nodePath["tagName"] = anchorNode.tagName; // 'DIV'
-
     nodePath["prevSiblingCount"] = 0;
-    let siblingNode = anchorNode.previousSibling;
-    while (siblingNode && siblingNode != null) {
-      nodePath["prevSiblingCount"] = nodePath["prevSiblingCount"] + 1;
-      siblingNode = siblingNode.previousSibling;
+    let ignoreTextNode = false;
+    if (!nodePath["id"]){
+      if (anchorNode.localName == 'mark' || anchorNode.nodeType === Node.TEXT_NODE){
+        ignoreTextNode = true;
+      }
+      let siblingNode =  anchorNode.previousSibling;
+      while (siblingNode && siblingNode != null) {
+        if (ignoreTextNode && (siblingNode.localName == 'mark' || 
+            siblingNode.nodeType === Node.TEXT_NODE)) {
+              ignoreTextNode = true;
+          if (parentLevel == 0 && nodePath["prevSiblingCount"] == 0){
+            // fetch the text in mark and add in offsets in anchorOffset & focusOffset
+            let prevText = siblingNode.textContent;
+            let prevTextLength = prevText.length;
+            identifier["selectionNodeData"]["anchorOffset"] = 
+              identifier["selectionNodeData"]["anchorOffset"] + prevTextLength;
+            
+            identifier["selectionNodeData"]["focusOffset"] = 
+              identifier["selectionNodeData"]["focusOffset"] + prevTextLength;
+          }
+        }else{
+          nodePath["prevSiblingCount"] = nodePath["prevSiblingCount"] + 1;
+          if (siblingNode.localName == 'mark' || 
+              siblingNode.nodeType === Node.TEXT_NODE){
+                ignoreTextNode = true; 
+          }
+          ignoreTextNode = false;
+        }
+  
+        siblingNode = siblingNode.previousSibling;
+      }
     }
 
     nodePaths[parentLevel] = nodePath;
@@ -59,7 +97,9 @@ function getIdentifier() {
 
   identifier["nodePaths"] = nodePaths;
   // console.log("--------------identifier--------------",JSON.stringify(identifier));
-  return identifier;
+  let identifierId = null;
+
+  return {identifier, identifierId, selectionText};
 }
 
 /**
@@ -67,8 +107,12 @@ function getIdentifier() {
  * @param {*} identifier
  * @returns
  */
-function showIdentifier(identifier) {
-  console.log("--------------showIdentifier start--------------");
+function showIdentifier(identifier, selectionText) {
+
+  console.log("--------------showIdentifier start--------------", JSON.stringify(identifier));
+  console.log("--------------selectionText--------------", selectionText);
+  // return;
+
   let inputNodePaths = identifier["nodePaths"];
 
   let idLevel = identifier["idLevel"];
@@ -83,77 +127,133 @@ function showIdentifier(identifier) {
 
   let currentElement = document.getElementById(currentNodePath.id);
 
-  while (currentLevel > 0) {
+
+  while (currentLevel >= 0) {
+    console.log("--------------currentLevel--------------",currentLevel, currentElement);
     if (!currentElement) {
-      console.log(
-        "--------------Missing currentElement--------------",
-        currentLevel
-      );
+      console.log("--------------Missing currentElement--------------",currentLevel);
+      return;
     }
-    let nextNodePath = inputNodePaths[currentLevel - 1];
-    let nextElement = currentElement.childNodes[nextNodePath.prevSiblingCount];
-    currentElement = nextElement;
+
+
+
+    let currentSiblingCount = currentNodePath.prevSiblingCount;
+    let ignoreTextNode = false;
+    while(currentSiblingCount > 0){
+      if (!currentElement){
+        console.log("--------------Missing Sibling--------------",currentSiblingCount);
+        return;
+      }
+
+      if (!ignoreTextNode || (currentElement.localName != 'mark' && currentElement.nodeType != Node.TEXT_NODE)){
+        currentSiblingCount--;
+        if (currentElement.localName == 'mark' && currentElement.nodeType == Node.TEXT_NODE){
+          ignoreTextNode = true;
+        } else {
+          ignoreTextNode = false;
+        }
+      }
+      currentElement = currentElement.nextSibling;    
+    }
+
+    if (currentLevel == 0) {
+      break;
+    }
+
     currentLevel--;
+    currentNodePath = inputNodePaths[currentLevel];
+    currentElement = currentElement.childNodes[0];
   }
+
   let inputSelectionNodeData = identifier["selectionNodeData"];
   let startOffset = inputSelectionNodeData.anchorOffset;
   let endOffset = inputSelectionNodeData.focusOffset;
-  let styleClass = "highlighted";
 
-  // Get the element's text content
-  let originalText = currentElement.textContent;
+  console.log("lastElement for selection--------------",currentLevel, currentElement, inputSelectionNodeData);
+
   // Check for valid offsets
   if (
     startOffset >= endOffset ||
-    startOffset < 0 ||
-    endOffset > originalText.length
+    startOffset < 0
   ) {
     console.log("Invalid offsets!");
     return;
   }
 
-  // let cloneCurrentElement = currentElement.cloneNode(true);
+  console.log("--------------currentElement is Node Type--------------", currentElement.nodeType);
+    
+    //Todo: add data ids in mark element
+  // Todo: fix offset. n position is shifted just after n+1 mark element
+  // Todo: Fix getIdentifier the offsets are -1 if mark element is there. prevSiblingCount is wrong
+ if (currentElement.nodeType === Node.TEXT_NODE || currentElement.localName == 'mark') {
+    console.log("==currentElement===",currentElement, startOffset, endOffset);
+    while(endOffset > 0){
+      if (!currentElement){
+        console.log("--------------Missing Sibling--------------",currentLevel);
+        return;
+      }
 
-  if (currentElement.nodeType === Node.ELEMENT_NODE) {
-    // Slice the text into three parts: before, highlight, and after
-    let beforeText = originalText.slice(0, startOffset);
-    let highlightText = originalText.slice(startOffset, endOffset);
-    let afterText = originalText.slice(endOffset);
+      if (currentElement.localName == 'mark'){
+        let alreadyHighlightedTextLength = currentElement.textContent.length;
+        endOffset = endOffset - alreadyHighlightedTextLength;
+        startOffset = startOffset - alreadyHighlightedTextLength;
+        currentElement =  currentElement.nextSibling;
+        continue;
+      } else{
+        let textNode = currentElement;
+        let totalLength = textNode.textContent.length;
+        
+        if (startOffset >= totalLength){
+          startOffset = startOffset - totalLength;
+          endOffset = endOffset - totalLength;     
+          currentElement =  currentElement.nextSibling;    
+          continue;
+        }
 
-    // Create new HTML with the highlight text wrapped in a span
-    let highlightedHTML = `
-        ${beforeText}
-        <span class="#{styleClass}" style="background-color:yellow;">${highlightText}</span>
-        ${afterText}
-      `;
+        if (startOffset < 0){
+          startOffset = 0;
+        }
 
-    // Replace the element's content
-    currentElement.innerHTML = highlightedHTML;
-  } else if (currentElement.nodeType === Node.TEXT_NODE) {
-    let textNode = currentElement;
+        let currentLocalEndOffset = endOffset;
+        let currentLocalStartOffset = startOffset;
 
-    // Split the text node at the ending offset, moving text after the endOffset into a new text node.
-    let endNode = textNode.splitText(endOffset);
+        if (endOffset > totalLength){
+          currentLocalEndOffset = totalLength;
+        }
+        // Split the text node at the ending offset, moving text after the endOffset into a new text node.
+        let endNode = textNode.splitText(currentLocalEndOffset);
 
-    // Split the text node at the starting offset, moving text after the startOffset into a new text node.
-    let middleNode = textNode.splitText(startOffset);
+        // Split the text node at the starting offset, moving text after the startOffset into a new text node.
+        let middleNode = textNode.splitText(currentLocalStartOffset);
 
-    // Now, middleNode contains the text to be highlighted. Create a new element to wrap it.
-    let highlightSpan = document.createElement("span");
-    highlightSpan.style.backgroundColor = "yellow";
-    highlightSpan.className = styleClass;
+        // Now, middleNode contains the text to be highlighted. Create a new element to wrap it.
+        let highlightMark = document.createElement("mark");
+        highlightMark.className = "highlighted-text";
 
-    // Replace middleNode with highlightSpan, putting middleNode inside highlightSpan.
-    highlightSpan.appendChild(middleNode);
-    textNode.parentNode.insertBefore(highlightSpan, endNode);
+        // Replace middleNode with highlightMark, putting middleNode inside highlightMark.
+        highlightMark.appendChild(middleNode);
+        textNode.parentNode.insertBefore(highlightMark, endNode);
+
+        startOffset =   startOffset - currentLocalStartOffset;
+        endOffset = endOffset - currentLocalEndOffset;
+        if (endOffset <= 0){
+         return;
+        }
+
+        // check the correct logic here if nextElementSibling is needed
+        currentElement = currentElement.nextElementSibling || currentElement.nextSibling;    
+        currentElement = currentElement.nextSibling;    
+      }
+    }
   } else {
     console.log(
       "--------------currentElement is not a handled node type--------------",
-      currentElement.nodeType
+      currentElement.nodeType, currentElement.localName
     );
     return;
   }
 }
+
 
 async function shoWCommentsPopup() {
   let modalContainer = document.createElement("div");
@@ -259,6 +359,13 @@ function getUserDataFromToken(token) {
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `
+  .highlighted-text {
+    background-color: rgb(210, 231, 209);
+    color: black;
+    cursor: pointer;
+  }
+
+
   .user-info {
     display: flex;
     align-items: center;
@@ -380,9 +487,10 @@ addStyles();
     console.log("Received response:", response);
     if (response.isLoggedIn) {
       console.log("Add Comment- isLoggedIn");
-      shoWCommentsPopup();
-      let identifier = getIdentifier();
-      showIdentifier(identifier);
+      // shoWCommentsPopup();
+      let {identifier, identifierId, selectionText} = getIdentifier();
+      hideTooltip();
+      showIdentifier(identifier, selectionText);
     } else {
       console.log("Add Comment- isLoggedOut");
       chrome.runtime.sendMessage({ type: "showLoginPopup" });
