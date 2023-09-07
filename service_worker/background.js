@@ -161,7 +161,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const params = {
       "identifier": message.identifier,
       "identifierId": message.identifierId,
-      "selectionText": message.selectionText
+      "selectionText": message.selectionText,
+      "kind": message.kind 
     }
     ShowCommentPopup(params); 
     return false; 

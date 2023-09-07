@@ -23,10 +23,23 @@ async function showCommentsPopup(params) {
 
   const loadingMessage = document.createElement("div");
   loadingMessage.innerText = "Loading...";
-  fetchComments(params?.identifierId);
+  fetchComments(params);
 }
 
-function fetchComments(identifierId) {
+function fetchComments(params) {
+  if (params?.kind == 'selection' ){
+    fetchCommentsForSelection(params?.identifierId);
+  }else if (params?.kind == 'page'){
+    fetchCommentsForPage();
+  }
+}
+
+function fetchCommentsForPage() {
+
+}
+
+function fetchCommentsForSelection(identifierId) {
+  console.log("fetchCommentsForSelection", identifierId);
   if (identifierId == null){
     noCommentsPresent();
     return;
@@ -51,6 +64,7 @@ function fetchComments(identifierId) {
 function displayComments(data) {
   const commentContainer = document.getElementById("comment-container");
 
+  let htmlBlocks = '';
   if (data?.length > 0) {
     data.forEach((entity) => {
       const commentboxUi = `
@@ -70,8 +84,9 @@ function displayComments(data) {
             <div class="show_comm_username">${entity.comment}</div>
          </div>
         `;
-      commentContainer.innerHTML = commentboxUi;
+        htmlBlocks = htmlBlocks +   commentboxUi;    
     });
+    commentContainer.innerHTML = htmlBlocks;
   } else {
     noCommentsPresent();
   }
@@ -112,7 +127,8 @@ function addStyles() {
     .box-background{
       padding: 16px;
       border-radius: 8px;
-      background-color: #F5F5F5
+      background-color: #F5F5F5;
+      margin-bottom: 10px;
     }
 
     .comment-container {
