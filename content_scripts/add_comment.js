@@ -273,9 +273,11 @@ function showIdentifier(identifier, identifierId, selectionText) {
       console.log("Add Comment- isLoggedIn");
       let {identifier, identifierId, selectionText} = getIdentifier();
       hideTooltip();
-      chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
+      chrome.runtime.sendMessage({ type: "ShowHome" }, () => {
+        chrome.runtime.sendMessage({ type: "showCommentPopup", identifier: identifier, 
         identifierId: identifierId, selectionText: selectionText });
-      // showIdentifier(identifier, identifierId, selectionText);
+      // showIdentifier(identifier,identifierId, selectionText);
+      });
     } else {
       console.log("Add Comment- isLoggedOut");
       chrome.runtime.sendMessage({ type: "showLoginPopup" });

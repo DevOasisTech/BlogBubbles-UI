@@ -10,30 +10,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function shoWCommentsPopup(params) {
-
-  console.log("params",params);
-  let modalContainer = document.createElement("div");
-  modalContainer.style.position = "fixed";
-  modalContainer.style.top = "0";
-  modalContainer.style.right = "0";
-  modalContainer.style.width = "100%";
-  modalContainer.style.height = "100%";
-  modalContainer.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-  modalContainer.style.zIndex = "10000";
-  modalContainer.style.display = "flex";
-  modalContainer.style.justifyContent = "flex-end";
-
-  let modalContent = document.createElement("div");
-  modalContent.className = "modal-content";
-
-  modalContent.style.backgroundColor = "white";
-  modalContent.style.padding = "50px";
-  modalContent.style.width = "400px";
-  modalContent.style.height = "100vh";
-
-  modalContainer.appendChild(modalContent);
+  console.log("params", params);
   let userPostCommentsForm = `
-  <button id="close-button" class="close-button">X</button>
   <div class="container">
   <div class="success-message">You have added comment successfully.</div>
     <div class="user-name">User Name</div>
@@ -61,39 +39,39 @@ async function shoWCommentsPopup(params) {
     <div style="border-bottom: 1px solid rgb(242, 242, 242); padding: 20px, 0px"></div>
     `;
 
-  let modalContentHtml = userPostCommentsForm + devider + responses + commentBox;
-  modalContent.innerHTML = modalContentHtml;
+  const addCommentSection = document.getElementById("add-comment-section");
+  let modalContentHtml =
+    userPostCommentsForm + devider + responses + commentBox;
+  addCommentSection.innerHTML = modalContentHtml;
 
-  modalContainer.appendChild(modalContent);
-  document.body.appendChild(modalContainer);
-
-  const closeButton = document.getElementById("close-button");
+  // const closeButton = document.getElementById("close-button");
   const postButton = document.getElementById("post-button");
   const commentInput = document.getElementById("comment-input");
   const successMessage = document.querySelector(".success-message");
 
-  closeButton.addEventListener("click", function () {
-    modalContainer.remove();
-  });
+  // closeButton.addEventListener("click", function () {
+  //   modalContainer.remove();
+  // });
 
-  fetchComments()
+  fetchComments();
 
   function fetchComments() {
-    const loadingMessage = document.createElement('div');
-    loadingMessage.innerText = 'Loading...';
-    modalContent.appendChild(loadingMessage);
-    const showCommentApiUrl = `http://localhost:8000/data/comments/${params?.identifierId || null}`;
+    const loadingMessage = document.createElement("div");
+    loadingMessage.innerText = "Loading...";
+    addCommentSection.appendChild(loadingMessage);
+    const showCommentApiUrl = `http://localhost:8000/data/comments/${
+      params?.identifierId || null
+    }`;
     fetch(showCommentApiUrl)
       .then((response) => response.json())
       .then((data) => {
-        modalContent.removeChild(loadingMessage);
-        console.log("data",data);
-        })
+        addCommentSection.removeChild(loadingMessage);
+        console.log("data", data);
+      })
       .catch((error) => {
-        console.error('Error fetching comments:', error);
+        console.error("Error fetching comments:", error);
       });
   }
-
 
   const data = {
     identifier: params?.identifier || {},

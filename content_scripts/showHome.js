@@ -36,8 +36,13 @@ async function createLoggedInContainer() {
             <button id="logout-btn" class="logout-button">Logout</button>
         </div>
         `;
-    
-        loggedInHeader.innerHTML = loggedInContainer;
+        
+        const addCommentSection = `<div id="add-comment-section"></div>`
+        const showCommentSection = `<div id="show-comment-section"></div>`
+
+        let modalContentHtml = loggedInContainer + addCommentSection + showCommentSection;
+        loggedInHeader.innerHTML = modalContentHtml;
+
         document.body.appendChild(mainContainer);
     
         const closeButton = document.getElementById("close-button");
