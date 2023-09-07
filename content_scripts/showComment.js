@@ -22,7 +22,7 @@ async function showCommentsPopup(params) {
 }
 
 function fetchComments(identifierId) {
-  const showCommentApiUrl = `http://localhost:8000/data/comments/${
+  const showCommentApiUrl = `http://localhost:8000/v1/comments/${
     identifierId || null
   }`;
 

@@ -51,7 +51,7 @@ async function showSignupPopup() {
   const cPasswordInput = document.getElementById("signupCPassword");
   const closeButton = document.getElementById("close-button")
 
-  const signUpApiUrl = "http://localhost:8000/v1/register";
+  const signUpApiUrl = "http://localhost:8000/v1/auth/register";
 
   closeButton.addEventListener("click", function() {
     console.log("closeButton");

@@ -73,7 +73,7 @@ async function createCommentApi(token, params) {
     anchor_text: params?.selectionText || "",
   };
 
-  const addCommentApiUrl = "http://localhost:8000/data/comments";
+  const addCommentApiUrl = "http://localhost:8000/v1/comments";
   let requestData = {
     method: "POST",
     headers: {

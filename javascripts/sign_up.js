@@ -7,7 +7,7 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const cPasswordInput = document.getElementById("cPassword");
 
-const signUpApiUrl = "http://localhost:8000/v1/register";
+const signUpApiUrl = "http://localhost:8000/v1/auth/register";
 const tokenKey = "auth_token";
 
 signupLink.addEventListener("click", function () {

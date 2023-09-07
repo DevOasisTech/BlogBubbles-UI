@@ -47,7 +47,7 @@ async function showSignupPopup() {
   const errorMsg = document.getElementById("error-msg");
   const createAccountLink = document.getElementById("create-account-link");
 
-  const loginApiUrl = "http://localhost:8000/v1/login";
+  const loginApiUrl = "http://localhost:8000/v1/auth/login";
 
   const closeButton = document.getElementById("close-button")
   closeButton.addEventListener("click", function() {
