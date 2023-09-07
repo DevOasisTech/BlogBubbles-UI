@@ -161,9 +161,3 @@ function showIdentifier(identifier, identifierId) {
     return;
   }
 }
-
-
-(async function () {
-      console.log("Highlight Anchor Text - start");
-      showIdentifier(identifier, identifierId);
-})();

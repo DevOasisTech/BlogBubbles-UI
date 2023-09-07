@@ -218,5 +218,3 @@ function addStyles() {
 
   document.head.appendChild(style);
 }
-
-addStyles();

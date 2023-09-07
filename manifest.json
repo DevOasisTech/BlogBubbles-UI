@@ -24,7 +24,11 @@
       {
         "matches": ["<all_urls>"],
         "js": ["content_scripts/showComment.js"]
-      }        
+      },
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_scripts/highlightAnchorText.js"]
+      }         
     ],
     "host_permissions": [
       "<all_urls>"

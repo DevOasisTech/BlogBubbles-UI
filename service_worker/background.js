@@ -122,20 +122,7 @@ function ShowCommentPopup(params) {
 function HighlightAnchorText(params) {
   getActiveTab().then((activeTab) => {
     if(activeTab) {
-
-      // Execute your content script
-      chrome.scripting.executeScript({
-        target: { tabId: activeTab.id },
-        files: ["content_scripts/highlightAnchorText.js"]
-      }, function() {
-        // Optional callback after the script has been injected
-        if (chrome.runtime.lastError) {
-          console.log("HighlightAnchorText error");
-          console.error(chrome.runtime.lastError);
-        } else{
-          chrome.tabs.sendMessage(activeTab.id, { type: "Tab-highlightAnchorText", params: params });
-        }
-      });
+      chrome.tabs.sendMessage(activeTab.id, { type: "Tab-highlightAnchorText", params: params });
     }
   });
 }
