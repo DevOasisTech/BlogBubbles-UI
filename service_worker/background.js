@@ -181,6 +181,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.runtime.onInstalled.addListener(function() {
+
 // Create a context menu for selected text
 chrome.contextMenus.create({
     id: "annotateText",
@@ -203,12 +204,14 @@ chrome.contextMenus.create({
     });
   });
 
+  chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
+    console.log("chrome.webNavigation.onHistoryStateUpdated", details.tabId);
+    chrome.scripting.executeScript({
+        target: { tabId: details.tabId},
+        files: ['content_scripts/onPageLoad.js']
+    });
+  });
+
 });
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
-  // Inject your content script whenever the URL changes in an SPA
-  chrome.scripting.executeScript({
-      target: { tabId: details.tabId },
-      files: ['content_scripts/onPageLoad.js']
-  });
-});
+

@@ -21,12 +21,13 @@ async function showCommentsPopup(params) {
   await sleep(60);
   showCommentSection.innerHTML = commentBox;
 
-  const loadingMessage = document.createElement("div");
-  loadingMessage.innerText = "Loading...";
+  // const loadingMessage = document.createElement("div");
+  // loadingMessage.innerText = "Loading...";
   fetchComments(params);
 }
 
 function fetchComments(params) {
+  console.log("params?.kind", params?.kind);
   if (params?.kind == 'selection' ){
     fetchCommentsForSelection(params?.identifierId);
   }else if (params?.kind == 'page'){
@@ -35,6 +36,7 @@ function fetchComments(params) {
 }
 
 function fetchCommentsForPage() {
+  console.log("fetchCommentsForPage");
   const showCommentApiUrl = `http://localhost:8000/v1/comments?url=${
     window.location.href
   }`;
@@ -75,6 +77,7 @@ function fetchCommentsForSelection(identifierId) {
 }
 
 function displayComments(data) {
+  console.log("displayComments", data);
   const commentContainer = document.getElementById("comment-container");
 
   let htmlBlocks = '';
