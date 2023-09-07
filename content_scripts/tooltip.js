@@ -7,13 +7,26 @@ tooltip.id = 'myTooltip';
 tooltip.style.display = 'none';
 const button = document.createElement('button');
 button.id = 'addCommentBtn';
+button.style.backgroundColor = 'black';
+button.style.color = 'white';
+button.style.outline = 'none';
+button.style.border = 'none';
 button.textContent = 'Add Comment';
 tooltip.appendChild(button);
 document.body.appendChild(tooltip);
 
 // Add tooltip CSS to the page
 const tooltipCSS = document.createElement('style');
-tooltipCSS.innerHTML = `#myTooltip { position: fixed; background-color: #f9f9f9; border: 1px solid #ccc; padding: 10px; z-index: 1000; }`;
+tooltipCSS.innerHTML = `
+#myTooltip {
+  position: fixed;
+  background-color: #000;
+  padding: 10px;
+  z-index: 1000;
+  color: #fff;
+  border-radius: 5px;
+}
+`;
 document.head.appendChild(tooltipCSS);
 
 // Now attach event listeners
@@ -59,7 +72,7 @@ function showTooltip(x, y) {
     
         const text = window.getSelection().toString().trim();
         if (text.length > 0) {
-            showTooltip(e.clientX, e.clientY - 80);
+            showTooltip(e.clientX, e.clientY - 70);
         } else {
           hideTooltip();
         }
