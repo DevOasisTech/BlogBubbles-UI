@@ -9,11 +9,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function showCommentsPopup(params) {
   console.log("345678", params);
 
   let commentBox = `<div class="comment-container" id="comment-container">`;
   const showCommentSection = document.getElementById("show-comment-section");
+  await sleep(40);
   showCommentSection.innerHTML = commentBox;
 
   const loadingMessage = document.createElement("div");
@@ -29,7 +34,6 @@ function fetchComments(identifierId) {
   fetch(showCommentApiUrl)
     .then((response) => response.json())
     .then((data) => {
-      console.log("34567", data);
       displayComments(data);
     })
     .catch((error) => {
@@ -43,46 +47,22 @@ function displayComments(data) {
 
   if (data?.length > 0) {
     data.forEach((entity) => {
-      const headerContainer = document.createElement("div");
-      headerContainer.className = "comments-header";
-
-      const userAvatarElement = document.createElement("div");
-      userAvatarElement.className = "user-avatar";
-      userAvatarElement.textContent = "A";
-
-      const userDetailsContainer = document.createElement("div");
-      userDetailsContainer.className = "user-details";
-
-      const usernameElement = document.createElement("div");
-      usernameElement.className = "show_comm_username";
-      usernameElement.textContent = entity.user.name;
-
-      const timeElement = document.createElement("div");
-      timeElement.className = "comment-time";
-      timeElement.textContent = formatDateAndTime(entity.created_at);
-
-      userDetailsContainer.appendChild(usernameElement);
-      userDetailsContainer.appendChild(timeElement);
-
-      headerContainer.appendChild(userAvatarElement);
-      headerContainer.appendChild(userDetailsContainer);
-
-      const commentTextElement = document.createElement("div");
-      commentTextElement.className = "comment-box comment-text";
-      commentTextElement.textContent = entity.archor_text;
-
-      const addedCommentElement = document.createElement("div");
-      addedCommentElement.className = "show_comm_username";
-      addedCommentElement.textContent = entity.comment ;
-
-      const divider = document.createElement("div");
-      divider.style.borderBottom = "1px solid black";
-      divider.style.margin = "30px 0px";
-
-      commentContainer.appendChild(headerContainer);
-      commentContainer.appendChild(commentTextElement);
-      commentContainer.appendChild(addedCommentElement);
-      commentContainer.appendChild(divider);
+      const commentboxUi = `
+         <div class="box-background">
+              <div class="comments-header">
+              <div class="user-avatar">A</div>
+              <div class="user-details">
+                <div class="show_comm_username">${entity.user.name}</div>
+                <div class="comment-time">${formatDateAndTime(
+                  entity.created_at
+                )}</div>
+              </div>
+            </div>
+            <div class="comment-box comment-text">${entity.archor_text}</div>
+            <div class="show_comm_username">${entity.comment}</div>
+         </div>
+        `;
+      commentContainer.innerHTML = commentboxUi;
     });
   } else {
     noCommentsPresent();
@@ -99,19 +79,19 @@ function noCommentsPresent() {
 }
 function formatDateAndTime(timestamp) {
   if (!timestamp) {
-    return 
+    return;
   }
   const date = new Date(timestamp);
 
   const year = date.getUTCFullYear();
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-  const day = date.getUTCDate().toString().padStart(2, '0');
-  const hours = date.getUTCHours().toString().padStart(2, '0');
-  const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const hours = date.getUTCHours().toString().padStart(2, "0");
+  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
 
-  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const ampm = hours >= 12 ? "PM" : "AM";
 
-  const hours12 = (hours % 12) || 12;
+  const hours12 = hours % 12 || 12;
 
   const formattedDate = `${day}/${month}/${year} ${hours12}:${minutes} ${ampm}`;
 
@@ -121,6 +101,12 @@ function formatDateAndTime(timestamp) {
 function addStyles() {
   const style = document.createElement("style");
   style.innerHTML = `
+    .box-background{
+      padding: 16px;
+      border-radius: 8px;
+      background-color: #F5F5F5
+    }
+
     .comment-container {
         display: flex;
         flex-direction: column;
